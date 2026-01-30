@@ -1708,3 +1708,198 @@ body {
     color: var(--bleu-nuit);
     transform: translateY(-5px);
 }
+
+/* =========================================
+   Bucket List Page
+   ========================================= */
+.todo-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: rgba(10, 22, 40, 0.6);
+    backdrop-filter: blur(10px);
+    border-radius: 30px;
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    padding: 40px;
+    min-height: 500px;
+    animation: fadeIn 0.8s ease;
+}
+
+.progress-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.progress-header h3 {
+    color: var(--dore);
+    font-family: var(--font-display);
+    font-size: 28px;
+}
+
+.add-todo-box {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 40px;
+}
+
+.todo-input {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 15px 25px;
+    border-radius: 50px;
+    color: white;
+    font-family: inherit;
+    font-size: 16px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.todo-input:focus {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: var(--dore);
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
+}
+
+.add-btn {
+    background: var(--dore);
+    color: var(--bleu-nuit);
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 24px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.add-btn:hover {
+    transform: scale(1.1) rotate(90deg);
+}
+
+.todo-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.todo-item {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 20px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+
+.todo-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+    border-color: rgba(212, 175, 55, 0.3);
+}
+
+.todo-item.completed {
+    opacity: 0.6;
+    background: rgba(10, 22, 40, 0.8);
+}
+
+.todo-checkbox {
+    width: 25px;
+    height: 25px;
+    border: 2px solid var(--dore);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.todo-item.completed .todo-checkbox {
+    background: var(--dore);
+}
+
+.todo-checkbox::after {
+    content: '✓';
+    color: var(--bleu-nuit);
+    font-weight: bold;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all 0.3s ease;
+}
+
+.todo-item.completed .todo-checkbox::after {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.todo-text {
+    flex: 1;
+    font-size: 18px;
+    color: var(--text-light);
+    transition: all 0.3s ease;
+}
+
+.todo-item.completed .todo-text {
+    text-decoration: line-through;
+    color: var(--text-muted);
+}
+
+.delete-btn {
+    background: none;
+    border: none;
+    color: #ff6b6b;
+    opacity: 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 5px;
+}
+
+/* Show delete button on hover only for desktop */
+.todo-item:hover .delete-btn {
+    opacity: 1;
+}
+
+/* Mobile Responsiveness for Bucket List */
+@media (max-width: 768px) {
+    .todo-container {
+        padding: 20px;
+        border-radius: 20px;
+    }
+
+    .add-todo-box {
+        flex-direction: row;
+        /* Keep input and button on same line */
+        gap: 10px;
+        margin-bottom: 30px;
+    }
+
+    .todo-input {
+        padding: 12px 20px;
+        font-size: 14px;
+    }
+
+    .add-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 20px;
+    }
+
+    .todo-text {
+        font-size: 16px;
+    }
+
+    /* On mobile, delete button should be always visible or easier to access */
+    .delete-btn {
+        opacity: 1;
+        font-size: 20px;
+        padding: 10px;
+        /* larger touch target */
+    }
+}

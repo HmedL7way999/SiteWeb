@@ -10,164 +10,12 @@
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap"
         rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        /* Specific Styles for Bucket List */
-        .todo-container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: rgba(10, 22, 40, 0.6);
-            backdrop-filter: blur(10px);
-            border-radius: 30px;
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            padding: 40px;
-            min-height: 500px;
-        }
-
-        .add-todo-box {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 40px;
-        }
-
-        .todo-input {
-            flex: 1;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 15px 25px;
-            border-radius: 50px;
-            color: white;
-            font-family: 'Poppins', sans-serif;
-            font-size: 16px;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .todo-input:focus {
-            background: rgba(255, 255, 255, 0.15);
-            border-color: var(--dore);
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
-        }
-
-        .add-btn {
-            background: var(--dore);
-            color: var(--bleu-nuit);
-            border: none;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            font-size: 24px;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .add-btn:hover {
-            transform: scale(1.1) rotate(90deg);
-        }
-
-        .todo-list {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .todo-item {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 20px;
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            border: 1px solid transparent;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .todo-item:hover {
-            background: rgba(255, 255, 255, 0.08);
-            transform: translateY(-2px);
-        }
-
-        .todo-item.completed {
-            opacity: 0.6;
-            background: rgba(10, 22, 40, 0.8);
-        }
-
-        .todo-checkbox {
-            width: 25px;
-            height: 25px;
-            border: 2px solid var(--dore);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            flex-shrink: 0;
-        }
-
-        .todo-item.completed .todo-checkbox {
-            background: var(--dore);
-            border-color: var(--dore);
-        }
-
-        .todo-checkbox::after {
-            content: '✓';
-            color: var(--bleu-nuit);
-            font-weight: bold;
-            opacity: 0;
-            transform: scale(0.5);
-            transition: all 0.3s ease;
-        }
-
-        .todo-item.completed .todo-checkbox::after {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        .todo-text {
-            flex: 1;
-            font-size: 18px;
-            color: var(--text-light);
-            transition: all 0.3s ease;
-        }
-
-        .todo-item.completed .todo-text {
-            text-decoration: line-through;
-            color: var(--text-muted);
-        }
-
-        .delete-btn {
-            background: none;
-            border: none;
-            color: #ff6b6b;
-            opacity: 0;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            padding: 5px;
-        }
-
-        .todo-item:hover .delete-btn {
-            opacity: 1;
-        }
-
-        .delete-btn:hover {
-            transform: scale(1.2);
-        }
-
-        .progress-header {
-            text-align: center;
-            margin-bottom: 30px;
-            color: var(--dore);
-            font-family: 'Playfair Display', serif;
-        }
-    </style>
 </head>
 
 <body>
+    <!-- Starfield Animation from script.js -->
+    <div id="starfield"></div>
+
     <!-- Navbar -->
     <nav class="navbar">
         <div class="container nav-container">
@@ -182,7 +30,7 @@
 
     <!-- Header Section -->
     <header class="hero" style="min-height: 40vh; align-items: flex-end; padding-bottom: 50px;">
-        <div class="stars"></div>
+        <div class="hero-overlay"></div>
         <div class="container hero-content">
             <h1 class="hero-title">Nos <span class="accent">Projets</span></h1>
             <p class="hero-subtitle">Toutes les choses folles qu'on fera ensemble.</p>
@@ -217,7 +65,11 @@
         </div>
     </footer>
 
+    <!-- Main scripts for Stars, Nav, and Supabase Config -->
     <script src="config.js"></script>
+    <script src="script.js"></script>
+
+    <!-- Page Specific Script -->
     <script>
         // Bucket List Logic
         const todoInput = document.getElementById('todo-input');
