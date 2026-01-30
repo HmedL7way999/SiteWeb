@@ -1,0 +1,410 @@
+const navbar = document.querySelector('.navbar');
+
+window.addEventListener('scroll', () => {
+    if (window.scrollY > 100) {
+        navbar.classList.add('scrolled');
+    } else {
+        navbar.classList.remove('scrolled');
+    }
+});
+
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    });
+});
+
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('animate-in');
+        }
+    });
+}, observerOptions);
+
+document.querySelectorAll('.section').forEach(section => {
+    observer.observe(section);
+});
+
+const style = document.createElement('style');
+style.textContent = `
+    .section {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.8s ease;
+    }
+    
+    .section.animate-in {
+        opacity: 1;
+        transform: translateY(0);
+    }
+`;
+document.head.appendChild(style);
+
+function createStars() {
+    const starfield = document.getElementById('starfield');
+    const starCount = 400;
+
+    for (let i = 0; i < starCount; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+
+        const x = Math.random() * 100;
+        const y = Math.random() * 100;
+
+        const size = Math.random() * 2 + 1;
+
+        const isGold = Math.random() > 0.6;
+        star.style.backgroundColor = isGold ? '#d4af37' : '#ffffff';
+        star.style.boxShadow = isGold ? '0 0 5px #f4d675' : '0 0 3px #ffffff';
+
+        const duration = Math.random() * 3 + 2;
+        const delay = Math.random() * 5;
+
+        star.style.left = `${x}%`;
+        star.style.top = `${y}%`;
+        star.style.width = `${size}px`;
+        star.style.height = `${size}px`;
+        star.style.setProperty('--duration', `${duration}s`);
+        star.style.animationDelay = `${delay}s`;
+
+        starfield.appendChild(star);
+    }
+}
+
+window.addEventListener('scroll', () => {
+    const starfield = document.getElementById('starfield');
+    const scrollPos = window.pageYOffset;
+    starfield.style.transform = `translateY(${scrollPos * 0.1}px)`;
+});
+
+createStars();
+
+const cityCards = document.querySelectorAll('.city-card[data-audio]');
+const audioMap = new Map();
+let audioContextUnlocked = false;
+
+function unlockAudio() {
+    if (audioContextUnlocked) return;
+    audioContextUnlocked = true;
+    console.log("🎵 Audio débloqué par l'utilisateur !");
+    window.removeEventListener('click', unlockAudio);
+    window.removeEventListener('touchstart', unlockAudio);
+}
+
+window.addEventListener('click', unlockAudio);
+window.addEventListener('touchstart', unlockAudio);
+
+cityCards.forEach(card => {
+    const audioSrc = card.getAttribute('data-audio');
+    if (audioSrc) {
+        const audio = new Audio(audioSrc);
+        audio.loop = true;
+        audio.volume = 0.5;
+        audioMap.set(card, audio);
+
+        card.addEventListener('mouseenter', () => {
+            const sound = audioMap.get(card);
+            if (sound) {
+                sound.play().catch(err => {
+                    console.warn(`Lecture bloquée pour ${audioSrc}. Cliquez n'importe où sur le site pour activer le son.`);
+                });
+            }
+        });
+
+        card.addEventListener('mouseleave', () => {
+            const sound = audioMap.get(card);
+            if (sound) {
+                sound.pause();
+                sound.currentTime = 0;
+            }
+        });
+    }
+});
+
+console.log('✨ Galaxie de Lilya déployée avec 400 étoiles !');
+console.log('🎵 Système audio prêt. Ajoutez "miami.mp3", "puertorico.mp3" et "essaouira.mp3" pour l\'ambiance !');
+
+/* ================================
+   Distance Page Logic
+   ================================ */
+
+function initDistancePage() {
+    // 1. Clocks Logic
+    const bostonClock = document.querySelector('#clock-boston .time-display');
+    const fezClock = document.querySelector('#clock-fez .time-display');
+    const bostonDate = document.querySelector('#clock-boston .date-display');
+    const fezDate = document.querySelector('#clock-fez .date-display');
+
+    if (bostonClock && fezClock) {
+        function updateClocks() {
+            const now = new Date();
+
+            // Boston (America/New_York)
+            const bostonTime = new Intl.DateTimeFormat('fr-FR', {
+                timeZone: 'America/New_York',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            }).format(now);
+
+            const bostonDateStr = new Intl.DateTimeFormat('fr-FR', {
+                timeZone: 'America/New_York',
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long'
+            }).format(now);
+
+            // Fez (Africa/Casablanca)
+            const fezTime = new Intl.DateTimeFormat('fr-FR', {
+                timeZone: 'Africa/Casablanca',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            }).format(now);
+
+            const fezDateStr = new Intl.DateTimeFormat('fr-FR', {
+                timeZone: 'Africa/Casablanca',
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long'
+            }).format(now);
+
+            bostonClock.textContent = bostonTime;
+            fezClock.textContent = fezTime;
+
+            if (bostonDate) bostonDate.textContent = bostonDateStr;
+            if (fezDate) fezDate.textContent = fezDateStr;
+        }
+
+        setInterval(updateClocks, 1000);
+        updateClocks();
+    }
+
+    // 2. Countdown Logic (Placeholder Date: 1st July 2026)
+    const countdownEl = document.getElementById('countdown');
+    if (countdownEl) {
+        // CHANGE THIS DATE to the next meeting date
+        const targetDate = new Date('2026-07-01T00:00:00');
+
+        function updateCountdown() {
+            const now = new Date();
+            const diff = targetDate - now;
+
+            if (diff > 0) {
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+                document.getElementById('days').textContent = days.toString().padStart(2, '0');
+                document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+                document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+            } else {
+                countdownEl.innerHTML = "<h3>C'est l'heure des retrouvailles ! ❤️</h3>";
+            }
+        }
+
+        setInterval(updateCountdown, 60000); // Update every minute
+        updateCountdown();
+    }
+
+    // 3. Daily Prompts
+    const promptBox = document.getElementById('daily-prompt');
+    const newPromptBtn = document.getElementById('new-prompt-btn');
+
+    if (promptBox && newPromptBtn) {
+        const prompts = [
+            "Quel est ton meilleur souvenir avec moi ?",
+            "Si on pouvait se téléporter maintenant, on irait où ?",
+            "Quelle chanson te fait penser à moi ?",
+            "Prochain date : on mange quoi ?",
+            "Ton trait de caractère préféré chez moi ?",
+            "Une chose que tu as hâte de faire ensemble ?",
+            "Raconte-moi un rêve que tu as fait récemment.",
+            "Si on gagnait au loto, on ferait quoi en premier ?",
+            "Quel film on doit absolument regarder ensemble ?"
+        ];
+
+        newPromptBtn.addEventListener('click', () => {
+            const randomPrompt = prompts[Math.floor(Math.random() * prompts.length)];
+            promptBox.style.opacity = 0;
+            setTimeout(() => {
+                promptBox.innerHTML = `<p>${randomPrompt}</p>`;
+                promptBox.style.opacity = 1;
+            }, 300);
+        });
+    }
+
+    // 4. Signal Button
+    const signalBtn = document.getElementById('send-signal-btn');
+    const signalVisual = document.getElementById('signal-visual');
+    const signalStatus = document.getElementById('signal-status');
+
+    if (signalBtn && signalVisual) {
+        signalBtn.addEventListener('click', () => {
+            signalVisual.classList.add('active');
+            signalBtn.disabled = true;
+            signalStatus.textContent = "Pensée envoyée ! 💫";
+
+            // Reset after animation
+            setTimeout(() => {
+                signalVisual.classList.remove('active');
+                signalBtn.disabled = false;
+                signalStatus.textContent = "Prêt à envoyer...";
+            }, 3000);
+        });
+    }
+
+    // 5. Music Player
+    const playerControls = document.querySelector('.player-controls');
+    if (playerControls) {
+        const audioPlayer = new Audio();
+        const playBtn = document.getElementById('play-pause-btn');
+        const vinyl = document.querySelector('.vinyl-record');
+        const nowPlaying = document.querySelector('.now-playing');
+        const trackBtns = document.querySelectorAll('.track-btn');
+        let isPlaying = false;
+
+        trackBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const src = btn.getAttribute('data-src');
+                const title = btn.textContent;
+
+                trackBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                audioPlayer.src = src;
+                audioPlayer.play();
+                isPlaying = true;
+                updatePlayerState(title);
+            });
+        });
+
+        playBtn.addEventListener('click', () => {
+            if (!audioPlayer.src) {
+                nowPlaying.textContent = "Sélectionnez une piste d'abord !";
+                return;
+            }
+
+            if (audioPlayer.paused) {
+                audioPlayer.play();
+                isPlaying = true;
+            } else {
+                audioPlayer.pause();
+                isPlaying = false;
+            }
+            updatePlayerState();
+        });
+
+        function updatePlayerState(title = null) {
+            playBtn.textContent = isPlaying ? '⏸' : '▶';
+            if (title) nowPlaying.textContent = `Lecture : ${title} 🎵`;
+
+            if (isPlaying) {
+                vinyl.classList.add('playing');
+            } else {
+                vinyl.classList.remove('playing');
+            }
+        }
+    }
+
+    // 6. Time Capsule
+    const capsuleInput = document.getElementById('capsule-input');
+    const saveCapsuleBtn = document.getElementById('save-capsule-btn');
+    const resetCapsuleBtn = document.getElementById('reset-capsule-btn');
+    const lockedView = document.getElementById('locked-capsule');
+    const capsuleMessage = document.getElementById('capsule-message');
+    const dateDisplay = document.getElementById('capsule-date-display');
+
+    if (saveCapsuleBtn) {
+        // Check if saved
+        const savedCapsule = localStorage.getItem('lilya_capsule');
+        if (savedCapsule) {
+            const data = JSON.parse(savedCapsule);
+            lockCapsule(data.date);
+        }
+
+        saveCapsuleBtn.addEventListener('click', () => {
+            const message = capsuleInput.value.trim();
+            if (message.length < 5) {
+                capsuleMessage.textContent = "Le message est trop court !";
+                return;
+            }
+
+            const now = new Date();
+            const capsuleData = {
+                message: message,
+                date: now.toLocaleDateString('fr-FR')
+            };
+
+            localStorage.setItem('lilya_capsule', JSON.stringify(capsuleData));
+            lockCapsule(capsuleData.date);
+            capsuleInput.value = "";
+        });
+
+        resetCapsuleBtn.addEventListener('click', () => {
+            if (confirm("Sûr de vouloir briser le sceau ? Le message sera perdu !")) {
+                localStorage.removeItem('lilya_capsule');
+                unlockCapsule();
+            }
+        });
+
+        function lockCapsule(date) {
+            capsuleInput.classList.add('hidden');
+            document.querySelector('.capsule-actions').classList.add('hidden');
+            lockedView.classList.remove('hidden');
+            dateDisplay.textContent = date;
+            capsuleMessage.textContent = "";
+        }
+
+        function unlockCapsule() {
+            capsuleInput.classList.remove('hidden');
+            document.querySelector('.capsule-actions').classList.remove('hidden');
+            lockedView.classList.add('hidden');
+        }
+    }
+
+    // 7. Weather Widget (Mock Simulation for stability)
+    const bostonWeather = document.getElementById('weather-boston');
+    const fezWeather = document.getElementById('weather-fez');
+
+    if (bostonWeather && fezWeather) {
+        // Simple mock data that updates randomly to feel "live"
+        // In chaos mode, we just want it to look good first.
+
+        function updateWeather() {
+            // Boston: usually colder
+            const bosTemp = Math.floor(Math.random() * (15 - 5 + 1) + 5);
+            // Fez: usually warmer
+            const fezTemp = Math.floor(Math.random() * (30 - 15 + 1) + 15);
+
+            const bosConditions = ['Nuageux', 'Venteux', 'Pluvieux', 'Éclaircies'];
+            const fezConditions = ['Ensoleillé', 'Beau temps', 'Chaud', 'Clair'];
+
+            document.querySelector('#weather-boston .temp').textContent = `${bosTemp}°C`;
+            document.querySelector('#weather-boston .condition').textContent = bosConditions[Math.floor(Math.random() * bosConditions.length)];
+
+            document.querySelector('#weather-fez .temp').textContent = `${fezTemp}°C`;
+            document.querySelector('#weather-fez .condition').textContent = fezConditions[Math.floor(Math.random() * fezConditions.length)];
+        }
+
+        updateWeather();
+        // Update every 5 minutes
+        setInterval(updateWeather, 300000);
+    }
+}
+
+// Initialize if on appropriate page
+document.addEventListener('DOMContentLoaded', initDistancePage);
