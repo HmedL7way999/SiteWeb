@@ -63,7 +63,8 @@ html {
 body {
     font-family: var(--font-body);
     background: var(--bleu-nuit);
-    color: var(--text-light);
+    color: #ffffff;
+    /* FORCE WHITE for maximum contrast */
     line-height: 1.6;
     overflow-x: hidden;
     position: relative;
@@ -189,7 +190,8 @@ body {
 }
 
 .nav-links a {
-    color: var(--text-light);
+    color: #ffffff;
+    /* High contrast for nav */
     text-decoration: none;
     font-size: 15px;
     font-weight: 500;
@@ -287,6 +289,8 @@ body {
     display: block;
     font-size: clamp(60px, 12vw, 120px);
     font-weight: 700;
+    color: var(--dore);
+    /* IMPORTANT FALLBACK */
     background: var(--gradient-gold);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -432,6 +436,8 @@ body {
     font-family: var(--font-display);
     font-size: clamp(36px, 5vw, 52px);
     font-weight: 700;
+    color: var(--dore);
+    /* Fallback */
     background: var(--gradient-gold);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
