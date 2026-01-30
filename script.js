@@ -225,26 +225,76 @@ function initDistancePage() {
     const newPromptBtn = document.getElementById('new-prompt-btn');
 
     if (promptBox && newPromptBtn) {
-        const prompts = [
-            "Quel est ton meilleur souvenir avec moi ?",
-            "Si on pouvait se téléporter maintenant, on irait où ?",
-            "Quelle chanson te fait penser à moi ?",
-            "Prochain date : on mange quoi ?",
-            "Ton trait de caractère préféré chez moi ?",
-            "Une chose que tu as hâte de faire ensemble ?",
-            "Raconte-moi un rêve que tu as fait récemment.",
-            "Si on gagnait au loto, on ferait quoi en premier ?",
-            "Quel film on doit absolument regarder ensemble ?"
-        ];
+        // Categories
+        const categories = {
+            'soft': [
+                "Quel est ton meilleur souvenir avec moi ?",
+                "Si on pouvait se téléporter maintenant, on irait où ?",
+                "Quelle chanson te fait penser à moi ?",
+                "Prochain date : on mange quoi ?",
+                "Une chose que tu as hâte de faire ensemble ?",
+                "Si on gagnait au loto, on ferait quoi en premier ?",
+                "Quel film on doit absolument regarder ensemble ?",
+                "Ta destination de rêve pour notre lune de miel ?",
+                "C’est quoi ta définition d’un dimanche parfait ?"
+            ],
+            'deep': [
+                "Quel est ta plus grande peur dans une relation ?",
+                "Quand as-tu su que tu m'aimais ?",
+                "Qu'est-ce qui me rend différent(e) de tes ex ?",
+                "Une chose que tu voudrais changer chez moi ?",
+                "Comment imagines-tu notre vie dans 10 ans ?",
+                "Quel est le moment où tu as été le plus fier de moi ?",
+                "Une chose que tu n'as jamais osé me dire ?",
+                "Quelle est ta plus grande insécurité ?",
+                "Qu'est-ce qui te fait te sentir le plus aimé ?"
+            ],
+            'spicy': [
+                "Quelle partie de mon corps préfères-tu ?",
+                "Ton fantasme inavoué ?",
+                "La tenue dans laquelle tu me trouves le/la plus sexy ?",
+                "Un endroit insolite où tu aimerais le faire ?",
+                "Ce que tu aimerais que je te fasse là, tout de suite ?",
+                "Plutôt dominé(e) ou dominant(e) ?",
+                "Quel a été notre meilleur moment au lit selon toi ?",
+                "Une chose coquine que tu veux essayer ?",
+                "Si je te dis 'Jeu de rôle', tu penses à quoi ?"
+            ]
+        };
 
-        newPromptBtn.addEventListener('click', () => {
-            const randomPrompt = prompts[Math.floor(Math.random() * prompts.length)];
+        let currentCat = 'soft';
+        const catBtns = document.querySelectorAll('.cat-btn');
+
+        // Logic for category switching
+        catBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Visual update
+                catBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                // Logic update
+                currentCat = btn.getAttribute('data-cat');
+                promptBox.innerHTML = "<p><i>Change de thème...</i></p>";
+
+                // Auto-trigger new prompt
+                setTimeout(() => {
+                    generatePrompt();
+                }, 300);
+            });
+        });
+
+        function generatePrompt() {
+            const list = categories[currentCat];
+            const randomPrompt = list[Math.floor(Math.random() * list.length)];
+
             promptBox.style.opacity = 0;
             setTimeout(() => {
                 promptBox.innerHTML = `<p>${randomPrompt}</p>`;
                 promptBox.style.opacity = 1;
             }, 300);
-        });
+        }
+
+        newPromptBtn.addEventListener('click', generatePrompt);
     }
 
     // 4. Signal Button

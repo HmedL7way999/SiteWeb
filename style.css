@@ -1476,6 +1476,52 @@ body {
    Visual Enhancements (Map & Particles)
    ========================================= */
 
+/* Category Selector */
+.category-selector {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.cat-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 5px 15px;
+    border-radius: 20px;
+    color: var(--text-muted);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.cat-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--text-light);
+}
+
+.cat-btn.active {
+    border-color: var(--dore);
+    color: var(--bleu-nuit);
+    font-weight: 700;
+}
+
+/* Specific colors for active states */
+.cat-btn[data-cat="soft"].active {
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+}
+
+.cat-btn[data-cat="deep"].active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.cat-btn[data-cat="spicy"].active {
+    background: linear-gradient(135deg, #ff0844 0%, #ffb199 100%);
+    color: white;
+}
+
 /* Map Animation */
 .map-container {
     width: 200px;
