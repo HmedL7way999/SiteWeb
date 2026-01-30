@@ -197,7 +197,7 @@ function initDistancePage() {
     const countdownEl = document.getElementById('countdown');
     if (countdownEl) {
         // CHANGE THIS DATE to the next meeting date
-        const targetDate = new Date('2026-07-01T00:00:00');
+        const targetDate = new Date('2026-08-04T00:00:00');
 
         function updateCountdown() {
             const now = new Date();
@@ -320,7 +320,7 @@ function initDistancePage() {
         }
     }
 
-    // 6. Time Capsule
+    // 6. Time Capsule (Connected to Supabase SQL)
     const capsuleInput = document.getElementById('capsule-input');
     const saveCapsuleBtn = document.getElementById('save-capsule-btn');
     const resetCapsuleBtn = document.getElementById('reset-capsule-btn');
@@ -329,36 +329,61 @@ function initDistancePage() {
     const dateDisplay = document.getElementById('capsule-date-display');
 
     if (saveCapsuleBtn) {
-        // Check if saved
-        const savedCapsule = localStorage.getItem('lilya_capsule');
-        if (savedCapsule) {
-            const data = JSON.parse(savedCapsule);
-            lockCapsule(data.date);
+        // Init: Check if a capsule exists in DB
+        checkCapsuleStatus();
+
+        async function checkCapsuleStatus() {
+            try {
+                // We check the 'capsules' table ordered by latest
+                const { data, error } = await window.supabaseClient
+                    .from('capsules')
+                    .select('*')
+                    .order('created_at', { ascending: false })
+                    .limit(1);
+
+                if (data && data.length > 0) {
+                    const latestCapsule = data[0];
+                    // Format date (e.g. 2024-03-20 -> 20/03/2024)
+                    const dateObj = new Date(latestCapsule.created_at);
+                    const dateStr = dateObj.toLocaleDateString('fr-FR');
+                    lockCapsule(dateStr);
+                }
+            } catch (err) {
+                console.log("Supabase pas encore configuré ou vide.", err);
+            }
         }
 
-        saveCapsuleBtn.addEventListener('click', () => {
+        saveCapsuleBtn.addEventListener('click', async () => {
             const message = capsuleInput.value.trim();
             if (message.length < 5) {
                 capsuleMessage.textContent = "Le message est trop court !";
                 return;
             }
 
-            const now = new Date();
-            const capsuleData = {
-                message: message,
-                date: now.toLocaleDateString('fr-FR')
-            };
+            capsuleMessage.textContent = "Sauvegarde en cours dans le cloud...";
+            saveCapsuleBtn.disabled = true;
 
-            localStorage.setItem('lilya_capsule', JSON.stringify(capsuleData));
-            lockCapsule(capsuleData.date);
-            capsuleInput.value = "";
+            try {
+                const { data, error } = await window.supabaseClient
+                    .from('capsules')
+                    .insert([{ content: message }]);
+
+                if (error) throw error;
+
+                const now = new Date();
+                lockCapsule(now.toLocaleDateString('fr-FR'));
+                capsuleInput.value = "";
+                capsuleMessage.textContent = "Message scellé pour toujours ! 🔒";
+
+            } catch (err) {
+                console.error("Erreur sauvegarde:", err);
+                capsuleMessage.textContent = "Erreur: Vérifiez votre connexion ou config.";
+                saveCapsuleBtn.disabled = false;
+            }
         });
 
         resetCapsuleBtn.addEventListener('click', () => {
-            if (confirm("Sûr de vouloir briser le sceau ? Le message sera perdu !")) {
-                localStorage.removeItem('lilya_capsule');
-                unlockCapsule();
-            }
+            alert("Impossible ! C'est une vraie base de données SQL maintenant. Le message est gravé pour de vrai. (Connectez-vous à Supabase pour le supprimer si besoin)");
         });
 
         function lockCapsule(date) {
