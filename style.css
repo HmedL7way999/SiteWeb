@@ -1589,3 +1589,68 @@ body {
         /* Bigger plane on mobile */
     }
 }
+
+/* =========================================
+   Identity Modal
+   ========================================= */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(5px);
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
+
+.modal-content {
+    background: var(--bleu-nuit);
+    border: 2px solid var(--dore);
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 0 50px rgba(212, 175, 55, 0.2);
+    transform: scale(1);
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.hidden .modal-content {
+    transform: scale(0.7);
+}
+
+.modal-content h3 {
+    color: var(--dore);
+    font-family: var(--font-display);
+    font-size: 30px;
+    margin-bottom: 20px;
+}
+
+.identity-buttons {
+    display: flex;
+    gap: 20px;
+    margin-top: 30px;
+    justify-content: center;
+}
+
+.identity-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--dore);
+    color: var(--text-light);
+    padding: 15px 30px;
+    border-radius: 10px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.identity-btn:hover {
+    background: var(--dore);
+    color: var(--bleu-nuit);
+    transform: translateY(-5px);
+}

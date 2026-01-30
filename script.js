@@ -297,24 +297,93 @@ function initDistancePage() {
         newPromptBtn.addEventListener('click', generatePrompt);
     }
 
-    // 4. Signal Button
+    // 4. Real-Time Love Signals (Supabase)
     const signalBtn = document.getElementById('send-signal-btn');
     const signalVisual = document.getElementById('signal-visual');
     const signalStatus = document.getElementById('signal-status');
+    const identityModal = document.getElementById('identity-modal');
+    const identityBtns = document.querySelectorAll('.identity-btn');
 
+    let senderIdentity = localStorage.getItem('lilya_identity');
+
+    // 4a. Check Identity
+    if (!senderIdentity) {
+        if (identityModal) identityModal.classList.remove('hidden');
+    }
+
+    if (identityBtns) {
+        identityBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                senderIdentity = btn.getAttribute('data-id');
+                localStorage.setItem('lilya_identity', senderIdentity);
+                identityModal.classList.add('hidden');
+                fetchSignals(); // Refresh count
+            });
+        });
+    }
+
+    // 4b. Send Signal
     if (signalBtn && signalVisual) {
-        signalBtn.addEventListener('click', () => {
+        // Init fetch
+        if (senderIdentity) fetchSignals();
+
+        signalBtn.addEventListener('click', async () => {
+            if (!senderIdentity) {
+                identityModal.classList.remove('hidden');
+                return;
+            }
+
+            // Visual feedback immediately
             signalVisual.classList.add('active');
             signalBtn.disabled = true;
-            signalStatus.textContent = "Pensée envoyée ! 💫";
+            signalStatus.textContent = "Envoi en cours...";
 
-            // Reset after animation
+            try {
+                const { error } = await window.supabaseClient
+                    .from('signals')
+                    .insert([{ sender: senderIdentity }]);
+
+                if (error) throw error;
+
+                signalStatus.textContent = "Envoyé avec succès ! ❤️";
+            } catch (err) {
+                console.error("Signal Error:", err);
+                signalStatus.textContent = "Erreur (mais l'intention compte)";
+            }
+
             setTimeout(() => {
                 signalVisual.classList.remove('active');
                 signalBtn.disabled = false;
-                signalStatus.textContent = "Prêt à envoyer...";
-            }, 3000);
+                if (signalStatus.textContent.includes('succès')) {
+                    signalStatus.textContent = "Prêt à envoyer...";
+                }
+            }, 2000);
         });
+    }
+
+    // 4c. Fetch incoming signals (From the other person)
+    async function fetchSignals() {
+        if (!senderIdentity) return;
+        const otherPerson = senderIdentity === 'Ahmed' ? 'Lilya' : 'Ahmed';
+
+        // Get today's range
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        try {
+            const { count, error } = await window.supabaseClient
+                .from('signals')
+                .select('*', { count: 'exact', head: true })
+                .eq('sender', otherPerson)
+                .gte('created_at', today.toISOString());
+
+            if (count !== null) {
+                document.querySelector('.signal-card h3').textContent = `Signal d'Amour (${count} reçus)`;
+                signalStatus.textContent = `${otherPerson} t'a envoyé ${count} pensées aujourd'hui.`;
+            }
+        } catch (err) {
+            console.log("Error fetching signals", err);
+        }
     }
 
     // 5. Music Player
