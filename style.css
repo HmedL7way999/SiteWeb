@@ -2,6 +2,8 @@
    UI/UX PRO MAX - DESIGN SYSTEM v2.0
    Theme: Galactic Romance (Glassmorphism & Gold)
    ========================================= */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap');
+
 :root {
     /* --- PALETTE --- */
     --bg-deep: #050510;
@@ -119,36 +121,70 @@ body {
     left: 0;
     right: 0;
     z-index: 1000;
-    padding: 15px 0;
-    background: rgba(5, 5, 16, 0.85);
-    /* Much darker/visible by default */
-    backdrop-filter: blur(12px);
-    transition: all 0.3s ease;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 20px 0;
+    /* More spacing/breathable */
+    background: rgba(5, 5, 16, 0.6);
+    /* More transparent for glass effect */
+    backdrop-filter: blur(20px);
+    /* Stronger blur (Glassmorphism) */
+    transition: all 0.4s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
 }
 
 .navbar.scrolled {
-    background: rgba(5, 5, 16, 0.98);
-    /* Almost solid when scrolled */
-    padding: 10px 0;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+    background: rgba(5, 5, 16, 0.95);
+    padding: 15px 0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     border-bottom: 1px solid var(--dore-glow);
 }
 
 .nav-container {
     max-width: var(--container-width);
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 40px;
+    /* Balanced margins */
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
+/* Logo Heartbeat Animation */
 .logo {
     display: flex;
     align-items: center;
     gap: 8px;
     text-decoration: none;
+    animation: heartbeat 4s infinite ease-in-out;
+}
+
+@keyframes heartbeat {
+    0% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 0 rgba(212, 175, 55, 0));
+    }
+
+    5% {
+        transform: scale(1.05);
+        filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.3));
+    }
+
+    10% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 0 rgba(212, 175, 55, 0));
+    }
+
+    15% {
+        transform: scale(1.05);
+        filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.3));
+    }
+
+    50% {
+        transform: scale(1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
 }
 
 .logo-text {
@@ -191,33 +227,37 @@ body {
 
 .nav-links a {
     color: #ffffff;
-    /* High contrast for nav */
     text-decoration: none;
-    font-size: 15px;
-    font-weight: 500;
-    letter-spacing: 0.5px;
+    font-family: 'Montserrat', sans-serif;
+    /* Modern & Fine */
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
     position: relative;
     padding: 5px 0;
-    transition: color 0.3s ease;
+    transition: color 0.4s ease;
 }
 
 .nav-links a::after {
     content: '';
     position: absolute;
-    bottom: 0;
+    bottom: -5px;
     left: 0;
     width: 0;
-    height: 2px;
+    height: 1px;
     background: var(--gradient-gold);
-    transition: width 0.3s ease;
+    box-shadow: 0 0 8px var(--dore);
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
 
 .nav-links a:hover,
 .nav-links a.active {
     color: var(--dore);
-    text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+    text-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
 }
+
+
 
 .nav-links a:hover::after,
 .nav-links a.active::after {
@@ -232,6 +272,32 @@ body {
 .logo-text {
     color: var(--dore);
     /* Fallback */
+}
+
+/* Scintillation douce pour les icônes */
+.nav-icon {
+    display: inline-block;
+    animation: twinkle-icon 3s infinite alternate ease-in-out;
+}
+
+@keyframes twinkle-icon {
+    0% {
+        opacity: 0.7;
+        transform: scale(0.9);
+        filter: brightness(100%);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.1);
+        filter: brightness(130%) drop-shadow(0 0 5px var(--dore));
+    }
+
+    100% {
+        opacity: 0.7;
+        transform: scale(0.9);
+        filter: brightness(100%);
+    }
 }
 
 
