@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nos Projets - Lilya & Ahmed</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        /* Specific Styles for Bucket List */
+        .todo-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(10, 22, 40, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            padding: 40px;
+            min-height: 500px;
+        }
+
+        .add-todo-box {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .todo-input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 15px 25px;
+            border-radius: 50px;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .todo-input:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--dore);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
+        }
+
+        .add-btn {
+            background: var(--dore);
+            color: var(--bleu-nuit);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .add-btn:hover {
+            transform: scale(1.1) rotate(90deg);
+        }
+
+        .todo-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .todo-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .todo-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .todo-item.completed {
+            opacity: 0.6;
+            background: rgba(10, 22, 40, 0.8);
+        }
+
+        .todo-checkbox {
+            width: 25px;
+            height: 25px;
+            border: 2px solid var(--dore);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .todo-item.completed .todo-checkbox {
+            background: var(--dore);
+            border-color: var(--dore);
+        }
+
+        .todo-checkbox::after {
+            content: '✓';
+            color: var(--bleu-nuit);
+            font-weight: bold;
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.3s ease;
+        }
+
+        .todo-item.completed .todo-checkbox::after {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .todo-text {
+            flex: 1;
+            font-size: 18px;
+            color: var(--text-light);
+            transition: all 0.3s ease;
+        }
+
+        .todo-item.completed .todo-text {
+            text-decoration: line-through;
+            color: var(--text-muted);
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #ff6b6b;
+            opacity: 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 5px;
+        }
+
+        .todo-item:hover .delete-btn {
+            opacity: 1;
+        }
+
+        .delete-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .progress-header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--dore);
+            font-family: 'Playfair Display', serif;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">Lilya <span class="accent">&</span> Ahmed</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Accueil</a></li>
+                <li><a href="distance.html">Distance ✈️</a></li>
+                <li><a href="bucketlist.html" class="nav-special active">Bucket List 📝</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Header Section -->
+    <header class="hero" style="min-height: 40vh; align-items: flex-end; padding-bottom: 50px;">
+        <div class="stars"></div>
+        <div class="container hero-content">
+            <h1 class="hero-title">Nos <span class="accent">Projets</span></h1>
+            <p class="hero-subtitle">Toutes les choses folles qu'on fera ensemble.</p>
+        </div>
+    </header>
+
+    <!-- Bucket List Section -->
+    <section class="section" style="padding-top: 0;">
+        <div class="container">
+            <div class="todo-container">
+                <div class="progress-header">
+                    <h3 id="progress-text">0% Réalisé</h3>
+                </div>
+
+                <div class="add-todo-box">
+                    <input type="text" id="todo-input" class="todo-input"
+                        placeholder="Ajouter un rêve à notre liste...">
+                    <button id="add-btn" class="add-btn">+</button>
+                </div>
+
+                <div id="todo-list" class="todo-list">
+                    <!-- Items will be loaded here -->
+                    <div style="text-align:center; color: #888;">Chargement de nos rêves... ☁️</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>Fait avec ❤️ pour Lilya & Ahmed</p>
+        </div>
+    </footer>
+
+    <script src="config.js"></script>
+    <script>
+        // Bucket List Logic
+        const todoInput = document.getElementById('todo-input');
+        const addBtn = document.getElementById('add-btn');
+        const todoList = document.getElementById('todo-list');
+        const progressText = document.getElementById('progress-text');
+
+        // Identify User
+        const identity = localStorage.getItem('lilya_identity') || 'Anonyme';
+
+        // Fetch Todos on Load
+        document.addEventListener('DOMContentLoaded', fetchTodos);
+
+        async function fetchTodos() {
+            try {
+                const { data, error } = await window.supabaseClient
+                    .from('todos')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+                renderTodos(data);
+            } catch (err) {
+                console.error("Erreur chargement:", err);
+                todoList.innerHTML = '<div style="text-align:center; color: #ff6b6b;">Erreur de connexion (Avez-vous lancé le SETUP_TODO.sql ?)</div>';
+            }
+        }
+
+        function renderTodos(todos) {
+            todoList.innerHTML = "";
+            let completedCount = 0;
+
+            if (todos.length === 0) {
+                todoList.innerHTML = '<div style="text-align:center; color: #888; font-style:italic;">La liste est vide. Commencez à rêver ! ✨</div>';
+                progressText.textContent = "0% Réalisé";
+                return;
+            }
+
+            todos.forEach(todo => {
+                if (todo.is_completed) completedCount++;
+
+                const item = document.createElement('div');
+                item.className = `todo-item ${todo.is_completed ? 'completed' : ''}`;
+                item.innerHTML = `
+                    <div class="todo-checkbox"></div>
+                    <span class="todo-text">${todo.task}</span>
+                    <button class="delete-btn" onclick="deleteTodo(${todo.id}, event)">🗑️</button>
+                    ${todo.author ? `<span style="font-size:10px; opacity:0.3; margin-left:10px;">par ${todo.author}</span>` : ''}
+                `;
+
+                // Toggle click (except if clicking delete)
+                item.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('delete-btn')) return;
+                    toggleTodo(todo.id, !todo.is_completed);
+                });
+
+                todoList.appendChild(item);
+            });
+
+            // Update progress
+            const percent = Math.round((completedCount / todos.length) * 100);
+            progressText.textContent = `${percent}% Réalisé (${completedCount}/${todos.length})`;
+        }
+
+        // Add Todo
+        addBtn.addEventListener('click', addTodo);
+        todoInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addTodo();
+        });
+
+        async function addTodo() {
+            const text = todoInput.value.trim();
+            if (!text) return;
+
+            // Optimistic UI could be here, but let's wait for simple consistent state
+            try {
+                const { error } = await window.supabaseClient
+                    .from('todos')
+                    .insert([{ task: text, author: identity }]);
+
+                if (error) throw error;
+
+                todoInput.value = "";
+                fetchTodos(); // Refresh
+            } catch (err) {
+                console.error("Erreur ajout:", err);
+                alert("Erreur lors de l'ajout.");
+            }
+        }
+
+        // Toggle Todo
+        async function toggleTodo(id, newState) {
+            try {
+                const { error } = await window.supabaseClient
+                    .from('todos')
+                    .update({ is_completed: newState })
+                    .eq('id', id);
+
+                if (error) throw error;
+                fetchTodos();
+            } catch (err) {
+                console.error("Erreur update:", err);
+            }
+        }
+
+        // Delete Todo (Global function for onclick)
+        window.deleteTodo = async function (id, e) {
+            e.stopPropagation(); // Stop bubble to item click
+            if (!confirm("Supprimer ce rêve ?")) return;
+
+            try {
+                const { error } = await window.supabaseClient
+                    .from('todos')
+                    .delete()
+                    .eq('id', id);
+
+                if (error) throw error;
+                fetchTodos();
+            } catch (err) {
+                console.error("Erreur delete:", err);
+            }
+        }
+    </script>
+</body>
+
+</html>
