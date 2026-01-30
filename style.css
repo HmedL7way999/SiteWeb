@@ -1325,15 +1325,149 @@ body {
 }
 
 @media (max-width: 768px) {
-    .audio-badge {
-        bottom: 20px;
-        right: 20px;
-        padding: 8px 15px;
+
+    /* Global Adjustments */
+    :root {
+        --section-padding: 60px 0;
     }
 
+    .container {
+        padding: 0 15px;
+    }
+
+    /* Typography */
+    .hero-title,
+    .title-name {
+        font-size: clamp(40px, 10vw, 60px);
+    }
+
+    .title-line {
+        font-size: 18px;
+    }
+
+    .section-title {
+        font-size: 28px;
+    }
+
+    .logo-text {
+        font-size: 22px;
+    }
+
+    /* Navigation */
+    .navbar {
+        background: rgba(10, 22, 40, 0.95);
+        /* Always show background on mobile */
+        padding: 10px 0;
+    }
+
+    .nav-links {
+        display: none;
+        /* In a real project we'd add a hamburger menu, but for now we simplify or keep it horizontal scroll */
+    }
+
+    /* Ideally we keep nav visible but smaller or use a bottom bar. 
+       Let's try a horizontal scroll for simplicity if items overflow */
+    .nav-links {
+        display: flex;
+        gap: 20px;
+        overflow-x: auto;
+        padding-bottom: 5px;
+        width: 100%;
+        mask-image: linear-gradient(to right, black 90%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to right, black 90%, transparent 100%);
+    }
+
+    .nav-container {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    /* Hero */
+    .hero-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Clocks */
+    .clocks-container {
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    .heart-pulse {
+        transform: rotate(90deg);
+        /* Vertical heart for vertical layout */
+    }
+
+    .clock-card {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .time-display {
+        font-size: 40px;
+    }
+
+    /* Weather */
     .weather-divider {
         width: 80%;
         height: 2px;
         background: linear-gradient(90deg, transparent, var(--dore), transparent);
+        margin: 10px 0;
+    }
+
+    .weather-card {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Music Player */
+    .vinyl-record {
+        width: 200px;
+        height: 200px;
+    }
+
+    .vinyl-center {
+        width: 60px;
+        height: 60px;
+    }
+
+    .track-list {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .track-btn {
+        text-align: center;
+    }
+
+    /* Presentation */
+    .presentation-content {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .image-placeholder {
+        max-width: 300px;
+        margin: 0 auto;
+    }
+
+    /* Cities */
+    .cities-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Audio Badge */
+    .audio-badge {
+        bottom: 20px;
+        right: 20px;
+        padding: 8px 15px;
+        background: rgba(10, 22, 40, 0.9);
+        border: 1px solid var(--dore);
+    }
+
+    .audio-text {
+        display: none;
+        /* Hide text on mobile to save space */
     }
 }
