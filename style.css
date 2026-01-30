@@ -123,9 +123,9 @@ body {
     z-index: 1000;
     padding: 20px 0;
     /* More spacing/breathable */
-    background: rgba(5, 5, 16, 0.6);
-    /* More transparent for glass effect */
-    backdrop-filter: blur(20px);
+    background: rgba(5, 5, 16, 0.2);
+    /* Ultra transparent for glass effect */
+    backdrop-filter: blur(25px);
     /* Stronger blur (Glassmorphism) */
     transition: all 0.4s ease;
     border-bottom: 1px solid rgba(255, 255, 255, 0.03);
