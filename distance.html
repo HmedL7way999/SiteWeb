@@ -12,6 +12,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap"
         rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
@@ -52,8 +53,18 @@
                     <div class="date-display">Chargement...</div>
                 </div>
 
-                <div class="heart-pulse">
-                    <div class="heart-icon">❤️</div>
+                <div class="map-container">
+                    <svg class="connection-line" viewBox="0 0 200 100" preserveAspectRatio="none">
+                        <!-- Curved dashed line -->
+                        <path d="M 0,80 Q 100,20 200,80" fill="none" class="path-line" />
+                        <!-- Moving Plane -->
+                        <g class="plane-icon">
+                            <text x="0" y="0" font-size="20">✈️</text>
+                            <animateMotion dur="4s" repeatCount="indefinite" rotate="auto"
+                                path="M 0,80 Q 100,20 200,80" />
+                        </g>
+                    </svg>
+                    <div class="pulsing-heart-center">❤️</div>
                 </div>
 
                 <div class="clock-card" id="clock-fez">
@@ -198,6 +209,7 @@
         </div>
     </footer>
 
+    <script src="config.js"></script>
     <script src="script.js"></script>
 </body>
 

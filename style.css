@@ -1471,3 +1471,75 @@ body {
         /* Hide text on mobile to save space */
     }
 }
+
+/* =========================================
+   Visual Enhancements (Map & Particles)
+   ========================================= */
+
+/* Map Animation */
+.map-container {
+    width: 200px;
+    height: 100px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.connection-line {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: visible;
+}
+
+.path-line {
+    stroke: var(--dore);
+    stroke-width: 2;
+    stroke-dasharray: 5, 5;
+    opacity: 0.5;
+}
+
+.pulsing-heart-center {
+    font-size: 30px;
+    animation: heartBeat 2s infinite;
+    z-index: 2;
+}
+
+/* Floating Particles (Hearts) */
+.heart-particle {
+    position: fixed;
+    pointer-events: none;
+    animation: flyUp 1.5s ease-out forwards;
+    font-size: 20px;
+    z-index: 9999;
+}
+
+@keyframes flyUp {
+    0% {
+        transform: translateY(0) scale(1) rotate(0deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(-100px) scale(1.5) rotate(45deg);
+        opacity: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .map-container {
+        width: 150px;
+        height: 60px;
+        transform: rotate(90deg);
+        /* Rotate map vertically on mobile */
+        margin: 20px 0;
+    }
+
+    .plane-icon text {
+        font-size: 24px;
+        /* Bigger plane on mobile */
+    }
+}

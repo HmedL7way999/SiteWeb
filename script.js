@@ -401,33 +401,65 @@ function initDistancePage() {
         }
     }
 
-    // 7. Weather Widget (Mock Simulation for stability)
-    const bostonWeather = document.getElementById('weather-boston');
-    const fezWeather = document.getElementById('weather-fez');
-
+    // 7. Smart Weather (Day/Night Aware)
     if (bostonWeather && fezWeather) {
-        // Simple mock data that updates randomly to feel "live"
-        // In chaos mode, we just want it to look good first.
+        function getIconForTime(timezone) {
+            const hour = parseInt(new Date().toLocaleString('en-US', { hour: 'numeric', hour12: false, timeZone: timezone }));
+            return (hour >= 6 && hour < 19) ? '☀️' : '🌙';
+        }
 
         function updateWeather() {
-            // Boston: usually colder
             const bosTemp = Math.floor(Math.random() * (15 - 5 + 1) + 5);
-            // Fez: usually warmer
             const fezTemp = Math.floor(Math.random() * (30 - 15 + 1) + 15);
 
-            const bosConditions = ['Nuageux', 'Venteux', 'Pluvieux', 'Éclaircies'];
-            const fezConditions = ['Ensoleillé', 'Beau temps', 'Chaud', 'Clair'];
+            const bosIcon = getIconForTime('America/New_York');
+            const fezIcon = getIconForTime('Africa/Casablanca');
 
-            document.querySelector('#weather-boston .temp').textContent = `${bosTemp}°C`;
-            document.querySelector('#weather-boston .condition').textContent = bosConditions[Math.floor(Math.random() * bosConditions.length)];
+            const bosElem = document.querySelector('#weather-boston');
+            const fezElem = document.querySelector('#weather-fez');
 
-            document.querySelector('#weather-fez .temp').textContent = `${fezTemp}°C`;
-            document.querySelector('#weather-fez .condition').textContent = fezConditions[Math.floor(Math.random() * fezConditions.length)];
+            if (bosElem) {
+                bosElem.querySelector('.weather-icon').textContent = bosIcon;
+                bosElem.querySelector('.temp').textContent = `${bosTemp}°C`;
+                bosElem.querySelector('.condition').textContent = bosIcon === '☀️' ? 'Ensoleillé' : 'Nuit Claire';
+            }
+
+            if (fezElem) {
+                fezElem.querySelector('.weather-icon').textContent = fezIcon;
+                fezElem.querySelector('.temp').textContent = `${fezTemp}°C`;
+                fezElem.querySelector('.condition').textContent = fezIcon === '☀️' ? 'Beau temps' : 'Étoilé';
+            }
         }
 
         updateWeather();
-        // Update every 5 minutes
         setInterval(updateWeather, 300000);
+    }
+
+    // 8. Interactive Particles (Heart Burst)
+    document.addEventListener('click', (e) => {
+        // Avoid bursting if clicking interactive elements (buttons, inputs)
+        if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+        createHeartBurst(e.clientX, e.clientY);
+    });
+
+    function createHeartBurst(x, y) {
+        for (let i = 0; i < 6; i++) {
+            const heart = document.createElement('div');
+            heart.classList.add('heart-particle');
+            heart.textContent = ['❤️', '✨', '💖', '✈️'][Math.floor(Math.random() * 4)];
+            // Random starting position offset
+            const offsetX = (Math.random() - 0.5) * 40;
+            const offsetY = (Math.random() - 0.5) * 40;
+
+            heart.style.left = `${x + offsetX}px`;
+            heart.style.top = `${y + offsetY}px`;
+
+            document.body.appendChild(heart);
+
+            // Cleanup
+            setTimeout(() => heart.remove(), 1500);
+        }
     }
 }
 
