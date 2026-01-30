@@ -13,9 +13,7 @@
     <style>
         body {
             background-color: #050510;
-            /* Deeper black */
             overflow: hidden;
-            /* No scroll, infinite space feeling */
             cursor: crosshair;
         }
 
@@ -23,57 +21,114 @@
             width: 100vw;
             height: 100vh;
             position: relative;
+            background-image: url('world_map.png');
+            /* Enhanced Map Background */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
         }
 
+        /* Overlay to darken map slightly for star visibility */
+        #constellation-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(5, 5, 16, 0.4);
+            pointer-events: none;
+        }
+
+        /* --- STAR STYLES --- */
         .memory-star {
             position: absolute;
-            width: 4px;
-            height: 4px;
+            width: 6px;
+            height: 6px;
             background: white;
             border-radius: 50%;
-            box-shadow: 0 0 10px #fff, 0 0 20px var(--dore);
+            box-shadow: 0 0 10px #fff;
             cursor: pointer;
             transition: transform 0.3s ease;
-            animation: twinkle 3s infinite;
-        }
-
-        .memory-star:hover {
-            transform: scale(3);
-            background: var(--dore);
             z-index: 10;
         }
 
+        /* Red Flaming Star (New Memory Style) */
+        .memory-star.flaming {
+            background: #ff4d4d;
+            box-shadow: 0 0 15px #ff4d4d, 0 0 30px #ff0000;
+            animation: flamePulse 1.5s infinite;
+        }
+
+        @keyframes flamePulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 10px #ff4d4d;
+            }
+
+            50% {
+                transform: scale(1.3);
+                box-shadow: 0 0 25px #ff0000;
+            }
+
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 10px #ff4d4d;
+            }
+        }
+
+        .memory-star:hover {
+            transform: scale(2);
+            z-index: 20;
+        }
+
+        /* --- TOOLTIP (Info Bubble) --- */
         .memory-tooltip {
             position: absolute;
-            bottom: 15px;
-            /* Above star */
+            bottom: 25px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(10, 22, 40, 0.9);
+            background: rgba(10, 22, 40, 0.95);
             border: 1px solid var(--dore);
-            padding: 10px 15px;
-            border-radius: 8px;
+            padding: 15px;
+            border-radius: 12px;
             color: white;
-            font-size: 14px;
-            width: 200px;
+            width: 250px;
             text-align: center;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.3s ease, transform 0.3s ease;
             z-index: 100;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
         .memory-star:hover .memory-tooltip {
             opacity: 1;
+            transform: translateX(-50%) translateY(-5px);
         }
 
-        /* Modal for Adding */
+        .tooltip-img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: none;
+            /* Hidden by default if no image */
+        }
+
+        .has-image .tooltip-img {
+            display: block;
+        }
+
+        /* --- MODAL --- */
         .add-memory-modal {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(16, 32, 56, 0.95);
+            background: rgba(16, 32, 56, 0.98);
             padding: 30px;
             border-radius: 20px;
             border: 1px solid var(--dore);
@@ -81,16 +136,43 @@
             max-width: 400px;
             z-index: 1000;
             text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
         }
 
         .modal-input {
             width: 100%;
-            padding: 10px;
-            margin: 15px 0;
+            padding: 12px;
+            margin: 10px 0;
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
             border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .file-upload-label {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+        }
+
+        .file-upload-label:hover {
+            border-color: var(--dore);
+            color: var(--dore);
+        }
+
+        .preview-thumb {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-top: 10px;
+            display: none;
         }
 
         .hidden {
@@ -102,8 +184,11 @@
             bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
-            color: rgba(255, 255, 255, 0.5);
+            color: rgba(255, 255, 255, 0.6);
             font-size: 14px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px 16px;
+            border-radius: 20px;
             pointer-events: none;
         }
     </style>
@@ -124,16 +209,23 @@
     </nav>
 
     <div id="constellation-container">
-        <!-- Stars will be injected here -->
-        <div class="instruction-overlay">Cliquez dans le ciel pour ajouter une étoile (un souvenir)</div>
+        <div class="instruction-overlay">Cliquez sur la carte pour marquer un souvenir ❤️</div>
     </div>
 
     <!-- Add Modal -->
     <div id="add-modal" class="add-memory-modal hidden">
-        <h3 style="color: var(--dore); margin-bottom: 10px;">Ajouter une étoile ✨</h3>
-        <textarea id="memory-content" class="modal-input" placeholder="Quel souvenir brille ici ?" rows="3"></textarea>
-        <div style="display: flex; gap: 10px; justify-content: center;">
-            <button id="save-memory-btn" class="cta-button">Allumer</button>
+        <h3 style="color: var(--dore); margin-bottom: 20px;">Nouveau Souvenir 📍</h3>
+
+        <textarea id="memory-content" class="modal-input" placeholder="Raconte ce moment..." rows="3"></textarea>
+
+        <label class="file-upload-label">
+            📸 Ajouter une photo (Optionnel)
+            <input type="file" id="memory-photo" accept="image/*" style="display: none;">
+        </label>
+        <img id="photo-preview" class="preview-thumb">
+
+        <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+            <button id="save-memory-btn" class="cta-button">Marquer le lieu 🔥</button>
             <button id="cancel-memory-btn" class="cta-button"
                 style="background: transparent; border: 1px solid rgba(255,255,255,0.3);">Annuler</button>
         </div>
@@ -146,11 +238,14 @@
         const container = document.getElementById('constellation-container');
         const modal = document.getElementById('add-modal');
         const input = document.getElementById('memory-content');
+        const photoInput = document.getElementById('memory-photo');
+        const photoPreview = document.getElementById('photo-preview');
         const saveBtn = document.getElementById('save-memory-btn');
         const cancelBtn = document.getElementById('cancel-memory-btn');
 
         let clickPos = { x: 0, y: 0 };
         const identity = localStorage.getItem('lilya_identity') || 'Anonyme';
+        let currentImageBase64 = null;
 
         // 1. Fetch & Render Memories
         document.addEventListener('DOMContentLoaded', fetchMemories);
@@ -162,9 +257,8 @@
 
             if (error) console.error(error);
             else {
-                // Clear existing stars (except overlay if any)
+                // Clear existing stars (except overlay)
                 document.querySelectorAll('.memory-star').forEach(el => el.remove());
-
                 data.forEach(mem => createStarElement(mem));
             }
         }
@@ -172,23 +266,35 @@
         function createStarElement(memory) {
             const star = document.createElement('div');
             star.className = 'memory-star';
+
+            // If it's a "flaming" type (or just based on logic, but for now all new can be flaming if we want, 
+            // but let's say "recent" ones or just keep them white for saved history to look clean, 
+            // and user said "I can add red flaming stars". 
+            // Let's make ALL stars white by default, but maybe "red" if they are special type?
+            // "stars blanches" for existing, "red flaming" for adding. 
+            // Once added, they become part of the map. Let's make them ALL white for consistency 
+            // OR distinct based on maybe author? No, "white" was requested for the map.
+
+            // Let's stick to white for saved ones to keep the map "clean" and elegant as requested.
+            // But if I want to persist the "flame", I'd need a flag. 
+            // For now, let's keep saved ones white.
+
             star.style.left = memory.x_pos + '%';
             star.style.top = memory.y_pos + '%';
 
-            // Random slight variations
-            star.style.animationDelay = Math.random() * 2 + 's';
-
-            star.innerHTML = `
-                <div class="memory-tooltip">
-                    ${memory.content}
-                    <div style="font-size: 10px; opacity: 0.5; margin-top:5px;">— ${memory.author}</div>
+            let tooltipContent = `
+                <div class="memory-tooltip ${memory.image_data ? 'has-image' : ''}">
+                    ${memory.image_data ? `<img src="${memory.image_data}" class="tooltip-img">` : ''}
+                    <p style="font-weight:600; font-size:15px; margin-bottom:5px;">${memory.content}</p>
+                    <div style="font-size: 11px; opacity: 0.6; margin-top:5px;">— ${memory.author}</div>
                 </div>
             `;
 
+            star.innerHTML = tooltipContent;
             container.appendChild(star);
         }
 
-        // 2. Click to Add
+        // 2. Click to Add (Shows Red Marker temporarily?)
         container.addEventListener('click', (e) => {
             if (e.target.closest('.memory-star') || e.target.closest('.navbar')) return;
 
@@ -199,41 +305,74 @@
             input.focus();
         });
 
-        // 3. Save Logic
+        // 3. Photo Handling
+        photoInput.addEventListener('change', function () {
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    photoPreview.src = e.target.result;
+                    photoPreview.style.display = 'block';
+                    currentImageBase64 = e.target.result; // Store Base64 string
+                };
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+
+        // 4. Save Logic
         saveBtn.addEventListener('click', async () => {
             const content = input.value.trim();
-            if (!content) return;
+            if (!content && !currentImageBase64) return; // Allow just photo
 
-            saveBtn.textContent = "...";
+            saveBtn.textContent = "Gravure en cours...";
 
             const newMemory = {
                 author: identity,
-                content: content,
+                content: content || "Souvenir sans mot...",
+                image_data: currentImageBase64, // Send Base64 directly
                 x_pos: clickPos.x,
                 y_pos: clickPos.y,
-                type: 'text'
+                type: currentImageBase64 ? 'image' : 'text'
             };
 
             const { data, error } = await window.supabaseClient
                 .from('memories')
                 .insert([newMemory])
-                .select(); // Return data to render immediately
+                .select();
 
             if (error) {
-                alert("Erreur cosmique...");
+                alert("Erreur cosmique : " + error.message);
                 console.error(error);
+                saveBtn.textContent = "Réessayer";
             } else {
-                createStarElement(data[0]); // Render immediately
+                // Render immediately as FLAMING RED STAR to show it's fresh/important
+                const el = createStarElement(data[0]);
+                // We re-render, but let's force the "flaming" class on this new element to satisfy user request
+                // "que je puisse rajouter des etoiles en rouge enflammé"
+
+                // Hack: find the last added star and add flaming class
+                const stars = document.querySelectorAll('.memory-star');
+                const lastStar = stars[stars.length - 1];
+                if (lastStar) lastStar.classList.add('flaming');
+
                 modal.classList.add('hidden');
-                input.value = "";
+                resetModal();
+                saveBtn.textContent = "Marquer le lieu 🔥";
             }
-            saveBtn.textContent = "Allumer";
         });
 
         cancelBtn.addEventListener('click', (e) => {
-            e.stopPropagation(); // Avoid re-triggering container click
+            e.stopPropagation();
             modal.classList.add('hidden');
+            resetModal();
         });
+
+        function resetModal() {
+            input.value = "";
+            photoInput.value = "";
+            photoPreview.style.display = 'none';
+            photoPreview.src = "";
+            currentImageBase64 = null;
+        }
 
     </script>
 </body>

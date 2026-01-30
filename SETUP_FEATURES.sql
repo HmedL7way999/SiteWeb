@@ -12,6 +12,7 @@ create table memories (
   id uuid default uuid_generate_v4() primary key,
   author text not null,
   content text not null,
+  image_data text, -- New: Base64 image
   type text default 'text', -- 'text', 'date', 'image'
   x_pos float not null, -- 0 to 100
   y_pos float not null, -- 0 to 100
