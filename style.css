@@ -1,28 +1,53 @@
+/* =========================================
+   UI/UX PRO MAX - DESIGN SYSTEM v2.0
+   Theme: Galactic Romance (Glassmorphism & Gold)
+   ========================================= */
 :root {
-    --bleu-nuit: #0a1628;
-    --bleu-nuit-light: #132238;
-    --bleu-nuit-lighter: #1a2d47;
-    --bleu-profond: #0d1f3c;
+    /* --- PALETTE --- */
+    --bg-deep: #050510;
+    --bg-card: rgba(255, 255, 255, 0.03);
+    --bg-glass: rgba(16, 32, 56, 0.75);
+    /* Refined Glass */
 
-    --dore: #d4af37;
-    --dore-light: #f4d675;
-    --dore-dark: #b8960c;
-    --dore-pale: #fff8e7;
+    --bleu-nuit: #0a1128;
+    --bleu-nuit-light: #151e3f;
+    --bleu-profond: #060b1e;
 
+    --dore: #FFD700;
+    /* Primary Accent */
+    --dore-light: #FFE55C;
+    --dore-dark: #B8860B;
+    --dore-glow: rgba(255, 215, 0, 0.4);
+
+    --nebula-pink: #ff00cc;
+    /* Secondary Accent */
+    --cyan-cyber: #00f3ff;
+    /* Highlight */
+
+    --blanc: #ffffff;
+    --text-muted: rgba(255, 255, 255, 0.7);
+    --gris-texte: #b0b5c1;
+
+    /* --- GRADIENTS --- */
     --gradient-gold: linear-gradient(135deg, var(--dore) 0%, var(--dore-light) 50%, var(--dore) 100%);
     --gradient-night: linear-gradient(180deg, var(--bleu-nuit) 0%, var(--bleu-profond) 100%);
-    --gradient-hero: linear-gradient(135deg, var(--bleu-nuit) 0%, var(--bleu-nuit-light) 50%, var(--bleu-profond) 100%);
+    --gradient-glass: linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
 
-    --text-light: #ffffff;
-    --text-muted: rgba(255, 255, 255, 0.7);
-    --text-gold: var(--dore);
-
+    /* --- TYPOGRAPHY --- */
     --font-display: 'Playfair Display', serif;
     --font-body: 'Poppins', sans-serif;
 
-    --section-padding: 100px 0;
-    --container-width: 1200px;
+    /* --- EFFECTS --- */
+    --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.5);
+    --shadow-neon: 0 0 15px var(--dore-glow);
+    --blur-strong: blur(20px);
+
+    /* --- SPACING --- */
+    --radius-lg: 20px;
+    --radius-xl: 30px;
 }
+
+
 
 
 * {
@@ -2003,8 +2028,45 @@ input[type="color"] {
     }
 }
 
-.current-mood-text {
-    font-size: 14px;
-    opacity: 0.7;
-    margin-top: 5px;
+margin-top: 5px;
+}
+
+/* =========================================
+   UTILITIES (PRO MAX)
+   ========================================= */
+.glass-panel {
+    background: var(--bg-card);
+    backdrop-filter: var(--blur-strong);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: var(--shadow-soft);
+}
+
+.text-gradient {
+    background: var(--gradient-gold);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hover-lift {
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.hover-lift:hover {
+    transform: translateY(-5px);
+}
+
+.btn-premium {
+    background: var(--gradient-gold);
+    color: #000;
+    font-weight: 700;
+    border: none;
+    box-shadow: var(--shadow-neon);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-premium:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 25px var(--dore-glow);
 }
