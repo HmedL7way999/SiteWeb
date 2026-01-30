@@ -548,36 +548,80 @@ function initDistancePage() {
                 fezElem.querySelector('.temp').textContent = `${fezTemp}°C`;
                 fezElem.querySelector('.condition').textContent = fezIcon === '☀️' ? 'Beau temps' : 'Étoilé';
             }
-        }
+            // 6. Leaderboard Logic (Game)
+            async function fetchLeaderboard() {
+                try {
+                    // Get counts for everyone
+                    const { data, error } = await window.supabaseClient
+                        .from('signals')
+                        .select('sender');
 
-        updateWeather();
-        setInterval(updateWeather, 300000);
-    }
+                    if (error) throw error;
 
-    // 8. Interactive Particles (Heart Burst)
-    document.addEventListener('click', (e) => {
-        // Avoid bursting if clicking interactive elements (buttons, inputs)
-        if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+                    let ahmedCount = 0;
+                    let lilyaCount = 0;
 
-        createHeartBurst(e.clientX, e.clientY);
-    });
+                    data.forEach(row => {
+                        if (row.sender === 'Ahmed') ahmedCount++;
+                        if (row.sender === 'Lilya') lilyaCount++;
+                    });
 
-    function createHeartBurst(x, y) {
-        for (let i = 0; i < 6; i++) {
-            const heart = document.createElement('div');
-            heart.classList.add('heart-particle');
-            heart.textContent = ['❤️', '✨', '💖', '✈️'][Math.floor(Math.random() * 4)];
-            // Random starting position offset
-            const offsetX = (Math.random() - 0.5) * 40;
-            const offsetY = (Math.random() - 0.5) * 40;
+                    // Update UI
+                    const ahmedEl = document.getElementById('score-ahmed');
+                    const lilyaEl = document.getElementById('score-lilya');
 
-            heart.style.left = `${x + offsetX}px`;
-            heart.style.top = `${y + offsetY}px`;
+                    if (ahmedEl) ahmedEl.textContent = ahmedCount;
+                    if (lilyaEl) lilyaEl.textContent = lilyaCount;
 
-            document.body.appendChild(heart);
+                    // Simple win logic
+                    if (ahmedCount > lilyaCount) {
+                        document.querySelector('.ahmed-score').style.border = '2px solid var(--dore)';
+                    } else if (lilyaCount > ahmedCount) {
+                        document.querySelector('.lilya-score').style.border = '2px solid var(--dore)';
+                    }
 
-            // Cleanup
-            setTimeout(() => heart.remove(), 1500);
+                } catch (err) {
+                    console.error("Leaderboard error:", err);
+                }
+            }
+
+            // Call updates
+            updateCountdown();
+            setInterval(updateCountdown, 60000);
+
+            // Initial fetches
+            fetchSignals();
+            fetchLeaderboard();
+
+            // Refresh leaderboard every minute
+            setInterval(fetchLeaderboard, 60000);
+
+            // 7. Interactive Particles (Heart Burst)
+            document.addEventListener('click', (e) => {
+                // Avoid bursting if clicking interactive elements (buttons, inputs)
+                if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+                createHeartBurst(e.clientX, e.clientY);
+            });
+
+            function createHeartBurst(x, y) {
+                for (let i = 0; i < 6; i++) {
+                    const heart = document.createElement('div');
+                    heart.classList.add('heart-particle');
+                    heart.textContent = ['❤️', '✨', '💖', '✈️'][Math.floor(Math.random() * 4)];
+                    // Random starting position offset
+                    const offsetX = (Math.random() - 0.5) * 40;
+                    const offsetY = (Math.random() - 0.5) * 40;
+
+                    heart.style.left = `${x + offsetX}px`;
+                    heart.style.top = `${y + offsetY}px`;
+
+                    document.body.appendChild(heart);
+
+                    // Cleanup
+                    setTimeout(() => heart.remove(), 1500);
+                }
+            }
         }
     }
 }

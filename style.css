@@ -1150,58 +1150,76 @@ body {
     padding: 40px;
 }
 
-/* Weather Section */
-.weather-grid {
+/* Leaderboard Section */
+.leaderboard-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 40px;
+    gap: 20px;
     margin-top: 30px;
 }
 
-.weather-card {
+.score-card {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 20px 30px;
+    padding: 30px;
     border-radius: 20px;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    min-width: 250px;
+    text-align: center;
+    min-width: 200px;
     transition: transform 0.3s ease;
+    position: relative;
+    overflow: hidden;
 }
 
-.weather-card:hover {
+.score-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: var(--dore);
+    opacity: 0.5;
+}
+
+.ahmed-score:hover,
+.lilya-score:hover {
     transform: translateY(-5px);
     background: rgba(255, 255, 255, 0.08);
-    border-color: var(--dore);
 }
 
-.weather-icon {
-    font-size: 40px;
+.score-icon {
+    font-size: 50px;
+    margin-bottom: 10px;
 }
 
-.weather-info h3 {
-    font-size: 18px;
-    color: var(--dore);
-    margin-bottom: 5px;
-}
-
-.weather-info .temp {
-    font-size: 24px;
+.score-value {
+    font-size: 42px;
     font-weight: 700;
-    color: var(--text-light);
+    color: var(--dore);
+    font-family: var(--font-display);
+    margin: 10px 0;
 }
 
-.weather-info .condition {
-    font-size: 14px;
+.score-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
     color: var(--text-muted);
 }
 
-.weather-divider {
-    width: 2px;
-    height: 80px;
-    background: linear-gradient(to bottom, transparent, var(--dore), transparent);
+.vs-badge {
+    background: var(--dore);
+    color: var(--bleu-nuit);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 18px;
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
 }
 
 .vinyl-record {
