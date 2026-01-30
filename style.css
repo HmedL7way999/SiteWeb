@@ -1150,6 +1150,60 @@ body {
     padding: 40px;
 }
 
+/* Weather Section */
+.weather-grid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    margin-top: 30px;
+}
+
+.weather-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 20px 30px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    min-width: 250px;
+    transition: transform 0.3s ease;
+}
+
+.weather-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--dore);
+}
+
+.weather-icon {
+    font-size: 40px;
+}
+
+.weather-info h3 {
+    font-size: 18px;
+    color: var(--dore);
+    margin-bottom: 5px;
+}
+
+.weather-info .temp {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-light);
+}
+
+.weather-info .condition {
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+.weather-divider {
+    width: 2px;
+    height: 80px;
+    background: linear-gradient(to bottom, transparent, var(--dore), transparent);
+}
+
 .vinyl-record {
     width: 250px;
     height: 250px;
