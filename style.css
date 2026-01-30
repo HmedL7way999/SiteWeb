@@ -118,16 +118,20 @@ body {
     left: 0;
     right: 0;
     z-index: 1000;
-    padding: 20px 0;
-    background: transparent;
+    padding: 15px 0;
+    background: rgba(5, 5, 16, 0.85);
+    /* Much darker/visible by default */
+    backdrop-filter: blur(12px);
     transition: all 0.3s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .navbar.scrolled {
-    background: rgba(10, 22, 40, 0.95);
-    backdrop-filter: blur(10px);
-    padding: 15px 0;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    background: rgba(5, 5, 16, 0.98);
+    /* Almost solid when scrolled */
+    padding: 10px 0;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+    border-bottom: 1px solid var(--dore-glow);
 }
 
 .nav-container {
@@ -957,17 +961,22 @@ body {
 }
 
 .activities-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
-    margin-top: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 50px;
+    padding-bottom: 50px;
 }
 
 .activity-card {
-    background: rgba(13, 31, 60, 0.6);
+    flex: 1 1 320px;
+    max-width: 450px;
+    background: rgba(13, 31, 60, 0.7);
+    backdrop-filter: blur(15px);
     border: 1px solid rgba(212, 175, 55, 0.1);
-    border-radius: 20px;
-    padding: 30px;
+    border-radius: 25px;
+    padding: 35px;
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -1104,8 +1113,7 @@ body {
     }
 }
 
-}
-}
+
 
 /* ================================
    New Features Styles (Weather, Music, Capsule)
@@ -2028,8 +2036,7 @@ input[type="color"] {
     }
 }
 
-margin-top: 5px;
-}
+
 
 /* =========================================
    UTILITIES (PRO MAX)

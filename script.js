@@ -182,9 +182,8 @@ function initDistancePage() {
     updateClocks();
 
     // 2. Countdown logic
-    // Target: Next Meeting (Example date: 15 June 2024)
-    // You can change this date!
-    const targetDate = new Date('2024-06-15T00:00:00');
+    // Target: 4 August 2026 (Date de rencontre)
+    const targetDate = new Date('2026-08-04T00:00:00');
     const countdownEl = document.getElementById('countdown-timer');
 
     function updateCountdown() {
