@@ -14,21 +14,136 @@
         body {
             background-color: #050510;
             overflow: hidden;
-            cursor: crosshair;
+            display: flex;
+            /* Sidebar Layout */
+            height: 100vh;
         }
 
+        /* --- SIDEBAR --- */
+        #memory-sidebar {
+            width: 320px;
+            background: #0a101e;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            flex-shrink: 0;
+            box-shadow: 5px 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .sidebar-header {
+            padding: 25px 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            background: linear-gradient(180deg, rgba(20, 30, 50, 0.8), transparent);
+        }
+
+        .sidebar-title {
+            font-family: 'Playfair Display', serif;
+            color: var(--dore);
+            font-size: 24px;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        .memory-list {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 15px;
+        }
+
+        .memory-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .memory-item:hover {
+            border-color: var(--dore);
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateX(5px);
+        }
+
+        .memory-item-content {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .memory-meta {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.4);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .memory-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .memory-item:hover .memory-actions {
+            opacity: 1;
+        }
+
+        .action-btn {
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            cursor: pointer;
+            border: none;
+            transition: background 0.2s;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+        }
+
+        .edit-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .edit-btn:hover {
+            background: var(--bleu-nuit);
+        }
+
+        .delete-btn {
+            background: rgba(255, 69, 58, 0.15);
+            color: #ff453a;
+        }
+
+        .delete-btn:hover {
+            background: rgba(255, 69, 58, 0.3);
+        }
+
+        .sidebar-footer {
+            padding: 15px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* --- MAP AREA --- */
         #constellation-container {
-            width: 100vw;
-            height: 100vh;
+            flex-grow: 1;
             position: relative;
             background-image: url('world_map.png');
-            /* Enhanced Map Background */
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
+            cursor: crosshair;
         }
 
-        /* Overlay to darken map slightly for star visibility */
         #constellation-container::before {
             content: '';
             position: absolute;
@@ -36,15 +151,15 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(5, 5, 16, 0.4);
+            background: rgba(5, 5, 16, 0.3);
             pointer-events: none;
         }
 
-        /* --- STAR STYLES --- */
+        /* --- STYLES FOR STARS --- */
         .memory-star {
             position: absolute;
-            width: 6px;
-            height: 6px;
+            width: 8px;
+            height: 8px;
             background: white;
             border-radius: 50%;
             box-shadow: 0 0 10px #fff;
@@ -53,7 +168,6 @@
             z-index: 10;
         }
 
-        /* Red Flaming Star (New Memory Style) */
         .memory-star.flaming {
             background: #ff4d4d;
             box-shadow: 0 0 15px #ff4d4d, 0 0 30px #ff0000;
@@ -82,7 +196,7 @@
             z-index: 20;
         }
 
-        /* --- TOOLTIP (Info Bubble) --- */
+        /* Tooltip styling */
         .memory-tooltip {
             position: absolute;
             bottom: 25px;
@@ -115,68 +229,142 @@
             margin-bottom: 10px;
             border: 1px solid rgba(255, 255, 255, 0.2);
             display: none;
-            /* Hidden by default if no image */
         }
 
         .has-image .tooltip-img {
             display: block;
         }
 
-        /* --- MODAL --- */
+        /* --- MODAL (Enhanced Design) --- */
         .add-memory-modal {
             position: fixed;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(16, 32, 56, 0.98);
-            padding: 30px;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: linear-gradient(145deg, rgba(16, 32, 56, 0.95), rgba(5, 10, 20, 0.98));
+            padding: 40px;
             border-radius: 20px;
-            border: 1px solid var(--dore);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            /* Gold border */
             width: 90%;
-            max-width: 400px;
+            max-width: 450px;
             z-index: 1000;
             text-align: center;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 215, 0, 0.1);
+            backdrop-filter: blur(15px);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .add-memory-modal.active {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+            pointer-events: all;
+        }
+
+        .add-memory-modal h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--dore);
+            font-size: 28px;
+            margin-bottom: 25px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            letter-spacing: 1px;
         }
 
         .modal-input {
             width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            margin: 10px 0 20px 0;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             color: white;
-            border-radius: 8px;
+            border-radius: 12px;
             font-family: 'Poppins', sans-serif;
+            font-size: 15px;
+            transition: border 0.3s, background 0.3s;
+            resize: none;
+        }
+
+        .modal-input:focus {
+            outline: none;
+            border-color: var(--dore);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .file-upload-block {
+            margin: 20px 0;
         }
 
         .file-upload-label {
-            display: block;
-            margin: 10px 0;
-            padding: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 12px;
             border: 1px dashed rgba(255, 255, 255, 0.3);
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
-            color: rgba(255, 255, 255, 0.7);
+            color: rgba(255, 255, 255, 0.8);
             font-size: 14px;
+            transition: all 0.3s;
         }
 
         .file-upload-label:hover {
             border-color: var(--dore);
+            background: rgba(255, 215, 0, 0.05);
             color: var(--dore);
         }
 
         .preview-thumb {
             width: 100%;
-            height: 100px;
+            height: 120px;
             object-fit: cover;
-            border-radius: 6px;
-            margin-top: 10px;
+            border-radius: 8px;
+            margin-top: 15px;
             display: none;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
         }
 
-        .hidden {
-            display: none !important;
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .cta-button {
+            padding: 12px 30px;
+            border-radius: 50px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-save {
+            background: linear-gradient(45deg, var(--dore), #FFA500);
+            color: #000;
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.4);
+        }
+
+        .btn-cancel {
+            background: transparent;
+            color: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
         }
 
         .instruction-overlay {
@@ -190,6 +378,37 @@
             padding: 8px 16px;
             border-radius: 20px;
             pointer-events: none;
+        }
+
+        /* Navbar adjustment for sidebar layout */
+        .navbar {
+            position: fixed;
+            width: 100%;
+            z-index: 200;
+        }
+
+        /* Offset content below navbar */
+        body {
+            padding-top: 80px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+                height: auto;
+                padding-top: 60px;
+            }
+
+            #memory-sidebar {
+                width: 100%;
+                height: 300px;
+                order: 2;
+            }
+
+            #constellation-container {
+                height: 60vh;
+                order: 1;
+            }
         }
     </style>
 </head>
@@ -208,76 +427,103 @@
         </div>
     </nav>
 
-    <div id="constellation-container">
-        <div class="instruction-overlay">Cliquez sur la carte pour marquer un souvenir ❤️</div>
+    <!-- SIDEBAR -->
+    <div id="memory-sidebar">
+        <div class="sidebar-header">
+            <h2 class="sidebar-title">Liste des Souvenirs</h2>
+            <p style="color:rgba(255,255,255,0.5); font-size:12px;">Des moments inoubliables 📖</p>
+        </div>
+        <div class="memory-list" id="memory-list-container">
+            <!-- Items injected here -->
+            <div style="text-align:center; padding:20px; color:rgba(255,255,255,0.3);">
+                Chargement...
+            </div>
+        </div>
+        <div class="sidebar-footer">
+            Map Interactive v2.1
+        </div>
     </div>
 
-    <!-- Add Modal -->
-    <div id="add-modal" class="add-memory-modal hidden">
-        <h3 style="color: var(--dore); margin-bottom: 20px;">Nouveau Souvenir 📍</h3>
+    <!-- MAP -->
+    <div id="constellation-container">
+        <div class="instruction-overlay">Cliquez sur la carte pour ajouter un souvenir ❤️</div>
+    </div>
 
-        <textarea id="memory-content" class="modal-input" placeholder="Raconte ce moment..." rows="3"></textarea>
+    <!-- Add/Edit Modal (Improved) -->
+    <div id="add-modal" class="add-memory-modal">
+        <h3 id="modal-title">Nouveau Souvenir 📍</h3>
 
-        <label class="file-upload-label">
-            📸 Ajouter une photo (Optionnel)
-            <input type="file" id="memory-photo" accept="image/*" style="display: none;">
-        </label>
-        <img id="photo-preview" class="preview-thumb">
+        <input type="hidden" id="edit-id"> <!-- Hidden ID for edits -->
 
-        <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
-            <button id="save-memory-btn" class="cta-button">Marquer le lieu 🔥</button>
-            <button id="cancel-memory-btn" class="cta-button"
-                style="background: transparent; border: 1px solid rgba(255,255,255,0.3);">Annuler</button>
+        <textarea id="memory-content" class="modal-input" placeholder="Racontez ce moment magique..."
+            rows="4"></textarea>
+
+        <div class="file-upload-block">
+            <label class="file-upload-label">
+                <span>📸</span>
+                <span>Ajouter/Changer Photo</span>
+                <input type="file" id="memory-photo" accept="image/*" style="display: none;">
+            </label>
+            <img id="photo-preview" class="preview-thumb">
+        </div>
+
+        <div class="modal-actions">
+            <button id="save-memory-btn" class="cta-button btn-save">Sauvegarder</button>
+            <button id="cancel-memory-btn" class="cta-button btn-cancel">Annuler</button>
         </div>
     </div>
 
     <script src="config.js"></script>
     <script>
-        // --- Constellation Logic ---
+        // --- Constellation & Sidebar Logic ---
 
         const container = document.getElementById('constellation-container');
+        const sidebarList = document.getElementById('memory-list-container');
         const modal = document.getElementById('add-modal');
-        const input = document.getElementById('memory-content');
+        const modalTitle = document.getElementById('modal-title');
+
+        const inputContent = document.getElementById('memory-content');
+        const inputId = document.getElementById('edit-id');
         const photoInput = document.getElementById('memory-photo');
         const photoPreview = document.getElementById('photo-preview');
+
         const saveBtn = document.getElementById('save-memory-btn');
         const cancelBtn = document.getElementById('cancel-memory-btn');
 
         let clickPos = { x: 0, y: 0 };
         const identity = localStorage.getItem('lilya_identity') || 'Anonyme';
         let currentImageBase64 = null;
+        let isEditing = false;
 
-        // 1. Fetch & Render Memories
-        document.addEventListener('DOMContentLoaded', fetchMemories);
+        // 1. Initial Load
+        document.addEventListener('DOMContentLoaded', fetchAndRenderAll);
 
-        async function fetchMemories() {
+        async function fetchAndRenderAll() {
             const { data, error } = await window.supabaseClient
                 .from('memories')
-                .select('*');
+                .select('*')
+                .order('created_at', { ascending: false });
 
-            if (error) console.error(error);
-            else {
-                // Clear existing stars (except overlay)
-                document.querySelectorAll('.memory-star').forEach(el => el.remove());
-                data.forEach(mem => createStarElement(mem));
+            if (error) {
+                console.error(error);
+                sidebarList.innerHTML = `<div style="padding:20px; text-align:center;">Erreur de chargement.</div>`;
+            } else {
+                renderMap(data);
+                renderSidebar(data);
             }
+        }
+
+        // --- RENDER MAP ---
+        function renderMap(data) {
+            // Clear existing stars
+            document.querySelectorAll('.memory-star').forEach(el => el.remove());
+            data.forEach(mem => createStarElement(mem));
         }
 
         function createStarElement(memory) {
             const star = document.createElement('div');
             star.className = 'memory-star';
-
-            // If it's a "flaming" type (or just based on logic, but for now all new can be flaming if we want, 
-            // but let's say "recent" ones or just keep them white for saved history to look clean, 
-            // and user said "I can add red flaming stars". 
-            // Let's make ALL stars white by default, but maybe "red" if they are special type?
-            // "stars blanches" for existing, "red flaming" for adding. 
-            // Once added, they become part of the map. Let's make them ALL white for consistency 
-            // OR distinct based on maybe author? No, "white" was requested for the map.
-
-            // Let's stick to white for saved ones to keep the map "clean" and elegant as requested.
-            // But if I want to persist the "flame", I'd need a flag. 
-            // For now, let's keep saved ones white.
+            star.dataset.id = memory.id;
 
             star.style.left = memory.x_pos + '%';
             star.style.top = memory.y_pos + '%';
@@ -294,80 +540,178 @@
             container.appendChild(star);
         }
 
-        // 2. Click to Add (Shows Red Marker temporarily?)
+        // --- RENDER SIDEBAR ---
+        function renderSidebar(data) {
+            if (data.length === 0) {
+                sidebarList.innerHTML = `<div style="text-align:center; padding:20px; opacity:0.5;">Aucun souvenir marqué. Cliquez sur la carte !</div>`;
+                return;
+            }
+
+            sidebarList.innerHTML = '';
+            data.forEach(mem => {
+                const item = document.createElement('div');
+                item.className = 'memory-item';
+                item.innerHTML = `
+                    <div class="memory-item-content">${mem.content.substring(0, 100)}${mem.content.length > 100 ? '...' : ''}</div>
+                    <div class="memory-meta">
+                        <span>${mem.image_data ? '📸 Photo' : ''}</span>
+                        <span>${new Date(mem.created_at).toLocaleDateString()}</span>
+                    </div>
+                    <div class="memory-actions">
+                        <button class="action-btn edit-btn" onclick="openEdit('${mem.id}')">Modifier</button>
+                        <button class="action-btn delete-btn" onclick="deleteMemory('${mem.id}')">Supprimer</button>
+                    </div>
+                `;
+
+                // Highlight star on hover
+                item.addEventListener('mouseenter', () => {
+                    const star = document.querySelector(`.memory-star[data-id="${mem.id}"]`);
+                    if (star) {
+                        star.style.transform = 'scale(3)';
+                        star.style.zIndex = '50';
+                        star.style.border = '2px solid var(--dore)';
+                    }
+                });
+                item.addEventListener('mouseleave', () => {
+                    const star = document.querySelector(`.memory-star[data-id="${mem.id}"]`);
+                    if (star) {
+                        star.style.transform = 'scale(1)';
+                        star.style.zIndex = '10';
+                        star.style.border = 'none';
+                    }
+                });
+
+                sidebarList.appendChild(item);
+            });
+        }
+
+        // 2. Click MAP to Add
         container.addEventListener('click', (e) => {
             if (e.target.closest('.memory-star') || e.target.closest('.navbar')) return;
 
-            clickPos.x = (e.clientX / window.innerWidth) * 100;
-            clickPos.y = (e.clientY / window.innerHeight) * 100;
+            // Prepare for NEW entry
+            isEditing = false;
+            resetModal();
+            modalTitle.textContent = "Nouveau Souvenir 📍";
 
-            modal.classList.remove('hidden');
-            input.focus();
+            clickPos.x = (e.clientX - container.getBoundingClientRect().left) / container.offsetWidth * 100;
+            clickPos.y = (e.clientY - container.getBoundingClientRect().top) / container.offsetHeight * 100;
+
+            modal.classList.add('active'); // CSS class toggle
+            inputContent.focus();
         });
 
-        // 3. Photo Handling
+        // 3. EDIT Functionality (Global scope for onclick)
+        window.openEdit = async (id) => {
+            const { data, error } = await window.supabaseClient
+                .from('memories')
+                .select('*')
+                .eq('id', id)
+                .single();
+
+            if (data) {
+                isEditing = true;
+                resetModal();
+                modalTitle.textContent = "Modifier Souvenir ✏️";
+
+                inputId.value = data.id;
+                inputContent.value = data.content;
+                currentImageBase64 = data.image_data;
+
+                if (data.image_data) {
+                    photoPreview.src = data.image_data;
+                    photoPreview.style.display = 'block';
+                }
+
+                // Keep existing position for edit
+                clickPos.x = data.x_pos;
+                clickPos.y = data.y_pos;
+
+                modal.classList.add('active');
+            }
+        };
+
+        // 4. DELETE Functionality
+        window.deleteMemory = async (id) => {
+            if (!confirm("Supprimer ce souvenir ?")) return;
+
+            const { error } = await window.supabaseClient
+                .from('memories')
+                .delete()
+                .eq('id', id);
+
+            if (!error) {
+                fetchAndRenderAll(); // Refresh
+            } else {
+                alert("Erreur suppression: " + error.message);
+            }
+        };
+
+        // 5. Save (Create or Update)
+        saveBtn.addEventListener('click', async () => {
+            const content = inputContent.value.trim();
+            if (!content && !currentImageBase64) return;
+
+            saveBtn.textContent = "Sauvegarde...";
+
+            const payload = {
+                author: identity,
+                content: content || "Souvenir...",
+                image_data: currentImageBase64,
+                x_pos: clickPos.x,
+                y_pos: clickPos.y,
+                type: currentImageBase64 ? 'image' : 'text'
+            };
+
+            let error;
+
+            if (isEditing) {
+                // UPDATE
+                const id = inputId.value;
+                const res = await window.supabaseClient
+                    .from('memories')
+                    .update(payload)
+                    .eq('id', id);
+                error = res.error;
+            } else {
+                // INSERT
+                const res = await window.supabaseClient
+                    .from('memories')
+                    .insert([payload]);
+                error = res.error;
+            }
+
+            if (error) {
+                alert("Erreur: " + error.message);
+            } else {
+                modal.classList.remove('active');
+                resetModal();
+                fetchAndRenderAll(); // Refresh everything
+            }
+            saveBtn.textContent = "Sauvegarder";
+        });
+
+        // Photo Preview
         photoInput.addEventListener('change', function () {
             if (this.files && this.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function (e) {
                     photoPreview.src = e.target.result;
                     photoPreview.style.display = 'block';
-                    currentImageBase64 = e.target.result; // Store Base64 string
+                    currentImageBase64 = e.target.result;
                 };
                 reader.readAsDataURL(this.files[0]);
             }
         });
 
-        // 4. Save Logic
-        saveBtn.addEventListener('click', async () => {
-            const content = input.value.trim();
-            if (!content && !currentImageBase64) return; // Allow just photo
-
-            saveBtn.textContent = "Gravure en cours...";
-
-            const newMemory = {
-                author: identity,
-                content: content || "Souvenir sans mot...",
-                image_data: currentImageBase64, // Send Base64 directly
-                x_pos: clickPos.x,
-                y_pos: clickPos.y,
-                type: currentImageBase64 ? 'image' : 'text'
-            };
-
-            const { data, error } = await window.supabaseClient
-                .from('memories')
-                .insert([newMemory])
-                .select();
-
-            if (error) {
-                alert("Erreur cosmique : " + error.message);
-                console.error(error);
-                saveBtn.textContent = "Réessayer";
-            } else {
-                // Render immediately as FLAMING RED STAR to show it's fresh/important
-                const el = createStarElement(data[0]);
-                // We re-render, but let's force the "flaming" class on this new element to satisfy user request
-                // "que je puisse rajouter des etoiles en rouge enflammé"
-
-                // Hack: find the last added star and add flaming class
-                const stars = document.querySelectorAll('.memory-star');
-                const lastStar = stars[stars.length - 1];
-                if (lastStar) lastStar.classList.add('flaming');
-
-                modal.classList.add('hidden');
-                resetModal();
-                saveBtn.textContent = "Marquer le lieu 🔥";
-            }
-        });
-
-        cancelBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            modal.classList.add('hidden');
+        cancelBtn.addEventListener('click', () => {
+            modal.classList.remove('active');
             resetModal();
         });
 
         function resetModal() {
-            input.value = "";
+            inputId.value = "";
+            inputContent.value = "";
             photoInput.value = "";
             photoPreview.style.display = 'none';
             photoPreview.src = "";
