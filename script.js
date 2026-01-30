@@ -138,148 +138,117 @@ console.log('✨ Galaxie de Lilya déployée avec 400 étoiles !');
 console.log('🎵 Système audio prêt. Ajoutez "miami.mp3", "puertorico.mp3" et "essaouira.mp3" pour l\'ambiance !');
 
 /* ================================
-   Distance Page Logic
+   DISTANCE PAGE LOGIC
    ================================ */
-
 function initDistancePage() {
-    // 1. Clocks Logic
-    const bostonClock = document.querySelector('#clock-boston .time-display');
-    const fezClock = document.querySelector('#clock-fez .time-display');
-    const bostonDate = document.querySelector('#clock-boston .date-display');
-    const fezDate = document.querySelector('#clock-fez .date-display');
+    console.log("✈️ Distance Page Initialized");
 
-    if (bostonClock && fezClock) {
-        function updateClocks() {
-            const now = new Date();
+    // 1. Clocks (Boston & Fez)
+    const clockBoston = document.getElementById('clock-boston');
+    const clockFez = document.getElementById('clock-fez');
 
-            // Boston (America/New_York)
-            const bostonTime = new Intl.DateTimeFormat('fr-FR', {
-                timeZone: 'America/New_York',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            }).format(now);
+    function updateClocks() {
+        if (!clockBoston || !clockFez) return;
 
-            const bostonDateStr = new Intl.DateTimeFormat('fr-FR', {
-                timeZone: 'America/New_York',
-                weekday: 'long',
-                day: 'numeric',
-                month: 'long'
-            }).format(now);
+        const now = new Date();
 
-            // Fez (Africa/Casablanca)
-            const fezTime = new Intl.DateTimeFormat('fr-FR', {
-                timeZone: 'Africa/Casablanca',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            }).format(now);
+        // Boston (UTC-5) - Note: Adjust for DST if needed, here taking simple offset
+        // Using toLocaleString logic for precision
+        const bostonTime = new Date(now.toLocaleString("en-US", { timeZone: "America/New_York" }));
+        const fezTime = new Date(now.toLocaleString("en-US", { timeZone: "Africa/Casablanca" }));
 
-            const fezDateStr = new Intl.DateTimeFormat('fr-FR', {
-                timeZone: 'Africa/Casablanca',
-                weekday: 'long',
-                day: 'numeric',
-                month: 'long'
-            }).format(now);
-
-            bostonClock.textContent = bostonTime;
-            fezClock.textContent = fezTime;
-
-            if (bostonDate) bostonDate.textContent = bostonDateStr;
-            if (fezDate) fezDate.textContent = fezDateStr;
-        }
-
-        setInterval(updateClocks, 1000);
-        updateClocks();
-    }
-
-    // 2. Countdown Logic (Placeholder Date: 1st July 2026)
-    const countdownEl = document.getElementById('countdown');
-    if (countdownEl) {
-        // CHANGE THIS DATE to the next meeting date
-        const targetDate = new Date('2026-08-04T00:00:00');
-
-        function updateCountdown() {
-            const now = new Date();
-            const diff = targetDate - now;
-
-            if (diff > 0) {
-                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-
-                document.getElementById('days').textContent = days.toString().padStart(2, '0');
-                document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
-                document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
-            } else {
-                countdownEl.innerHTML = "<h3>C'est l'heure des retrouvailles ! ❤️</h3>";
-            }
-        }
-
-        setInterval(updateCountdown, 60000); // Update every minute
-        updateCountdown();
-    }
-
-    // 3. Daily Prompts
-    const promptBox = document.getElementById('daily-prompt');
-    const newPromptBtn = document.getElementById('new-prompt-btn');
-
-    if (promptBox && newPromptBtn) {
-        // Categories
-        const categories = {
-            'soft': [
-                "Quel est ton meilleur souvenir avec moi ?",
-                "Si on pouvait se téléporter maintenant, on irait où ?",
-                "Quelle chanson te fait penser à moi ?",
-                "Prochain date : on mange quoi ?",
-                "Une chose que tu as hâte de faire ensemble ?",
-                "Si on gagnait au loto, on ferait quoi en premier ?",
-                "Quel film on doit absolument regarder ensemble ?",
-                "Ta destination de rêve pour notre lune de miel ?",
-                "C’est quoi ta définition d’un dimanche parfait ?"
-            ],
-            'deep': [
-                "Quel est ta plus grande peur dans une relation ?",
-                "Quand as-tu su que tu m'aimais ?",
-                "Qu'est-ce qui me rend différent(e) de tes ex ?",
-                "Une chose que tu voudrais changer chez moi ?",
-                "Comment imagines-tu notre vie dans 10 ans ?",
-                "Quel est le moment où tu as été le plus fier de moi ?",
-                "Une chose que tu n'as jamais osé me dire ?",
-                "Quelle est ta plus grande insécurité ?",
-                "Qu'est-ce qui te fait te sentir le plus aimé ?"
-            ],
-            'spicy': [
-                "Quelle partie de mon corps préfères-tu ?",
-                "Ton fantasme inavoué ?",
-                "La tenue dans laquelle tu me trouves le/la plus sexy ?",
-                "Un endroit insolite où tu aimerais le faire ?",
-                "Ce que tu aimerais que je te fasse là, tout de suite ?",
-                "Plutôt dominé(e) ou dominant(e) ?",
-                "Quel a été notre meilleur moment au lit selon toi ?",
-                "Une chose coquine que tu veux essayer ?",
-                "Si je te dis 'Jeu de rôle', tu penses à quoi ?"
-            ]
+        // Format Helper
+        const formatTime = (date) => {
+            return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        };
+        const formatDate = (date) => {
+            return date.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
         };
 
-        let currentCat = 'soft';
-        const catBtns = document.querySelectorAll('.cat-btn');
+        clockBoston.innerHTML = `
+            <h3>Boston 🇺🇸</h3>
+            <div class="time">${formatTime(bostonTime)}</div>
+            <div class="date">${formatDate(bostonTime)}</div>
+        `;
 
-        // Logic for category switching
+        clockFez.innerHTML = `
+            <h3>Fès 🇲🇦</h3>
+            <div class="time">${formatTime(fezTime)}</div>
+            <div class="date">${formatDate(fezTime)}</div>
+        `;
+    }
+
+    setInterval(updateClocks, 1000);
+    updateClocks();
+
+    // 2. Countdown logic
+    // Target: Next Meeting (Example date: 15 June 2024)
+    // You can change this date!
+    const targetDate = new Date('2024-06-15T00:00:00');
+    const countdownEl = document.getElementById('countdown-timer');
+
+    function updateCountdown() {
+        const now = new Date();
+        const diff = targetDate - now;
+
+        if (diff > 0) {
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+            document.getElementById('days').textContent = days.toString().padStart(2, '0');
+            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+        } else {
+            if (countdownEl) countdownEl.innerHTML = "<h3>C'est l'heure des retrouvailles ! ❤️</h3>";
+        }
+    }
+
+    // 3. Daily Discussion (Themed)
+    const promptBox = document.getElementById('daily-prompt');
+    const newPromptBtn = document.getElementById('new-prompt-btn');
+    const catBtns = document.querySelectorAll('.cat-btn');
+
+    const categories = {
+        'soft': [
+            "Quel est ton premier souvenir de nous ?",
+            "Si on pouvait partir demain, on irait où ?",
+            "Quelle chanson te fait penser à moi ?",
+            "Ton plat préféré que je devrais goûter ?",
+            "Si on avait un chat, on l'appellerait comment ?",
+            "Quelle est ta saison préférée et pourquoi ?"
+        ],
+        'deep': [
+            "Une chose que tu voudrais changer chez moi ?",
+            "Comment imagines-tu notre vie dans 10 ans ?",
+            "Quel est le moment où tu as été le plus fier de moi ?",
+            "Une chose que tu n'as jamais osé me dire ?",
+            "Quelle est ta plus grande insécurité ?",
+            "Qu'est-ce qui te fait te sentir le plus aimé ?"
+        ],
+        'spicy': [
+            "Quelle partie de mon corps préfères-tu ?",
+            "Ton fantasme inavoué ?",
+            "La tenue dans laquelle tu me trouves le/la plus sexy ?",
+            "Un endroit insolite où tu aimerais le faire ?",
+            "Ce que tu aimerais que je te fasse là, tout de suite ?",
+            "Plutôt dominé(e) ou dominant(e) ?",
+            "Quel a été notre meilleur moment au lit selon toi ?",
+            "Une chose coquine que tu veux essayer ?",
+            "Si je te dis 'Jeu de rôle', tu penses à quoi ?"
+        ]
+    };
+
+    let currentCat = 'soft';
+
+    if (newPromptBtn && promptBox) {
+        // Category Selection
         catBtns.forEach(btn => {
             btn.addEventListener('click', () => {
-                // Visual update
                 catBtns.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-
-                // Logic update
                 currentCat = btn.getAttribute('data-cat');
-                promptBox.innerHTML = "<p><i>Change de thème...</i></p>";
-
-                // Auto-trigger new prompt
-                setTimeout(() => {
-                    generatePrompt();
-                }, 300);
+                generatePrompt();
             });
         });
 
@@ -346,6 +315,7 @@ function initDistancePage() {
                 if (error) throw error;
 
                 signalStatus.textContent = "Envoyé avec succès ! ❤️";
+                fetchLeaderboard(); // Update leaderboard immediately
             } catch (err) {
                 console.error("Signal Error:", err);
                 signalStatus.textContent = "Erreur (mais l'intention compte)";
@@ -439,13 +409,18 @@ function initDistancePage() {
         }
     }
 
-    // 6. Time Capsule (Connected to Supabase SQL)
-    const capsuleInput = document.getElementById('capsule-input');
+    // 5b. Time Capsule
     const saveCapsuleBtn = document.getElementById('save-capsule-btn');
-    const resetCapsuleBtn = document.getElementById('reset-capsule-btn');
-    const lockedView = document.getElementById('locked-capsule');
+    const capsuleInput = document.getElementById('capsule-input');
     const capsuleMessage = document.getElementById('capsule-message');
-    const dateDisplay = document.getElementById('capsule-date-display');
+
+    function lockCapsule(dateStr) {
+        if (!capsuleInput || !saveCapsuleBtn) return;
+        capsuleInput.disabled = true;
+        capsuleInput.value = `🔒 Une capsule a été scellée le ${dateStr}. Rendez-vous aux retrouvailles pour l'ouvrir !`;
+        saveCapsuleBtn.style.display = 'none';
+        capsuleMessage.style.display = 'none';
+    }
 
     if (saveCapsuleBtn) {
         // Init: Check if a capsule exists in DB
@@ -500,127 +475,154 @@ function initDistancePage() {
                 saveCapsuleBtn.disabled = false;
             }
         });
+    }
 
-        resetCapsuleBtn.addEventListener('click', () => {
-            alert("Impossible ! C'est une vraie base de données SQL maintenant. Le message est gravé pour de vrai. (Connectez-vous à Supabase pour le supprimer si besoin)");
-        });
 
-        function lockCapsule(date) {
-            capsuleInput.classList.add('hidden');
-            document.querySelector('.capsule-actions').classList.add('hidden');
-            lockedView.classList.remove('hidden');
-            dateDisplay.textContent = date;
-            capsuleMessage.textContent = "";
-        }
+    // 6. Leaderboard Logic (Game) - GLOBAL SCOPE to update from signal button
+    async function fetchLeaderboard() {
+        try {
+            // Get counts for everyone
+            const { data, error } = await window.supabaseClient
+                .from('signals')
+                .select('sender');
 
-        function unlockCapsule() {
-            capsuleInput.classList.remove('hidden');
-            document.querySelector('.capsule-actions').classList.remove('hidden');
-            lockedView.classList.add('hidden');
+            if (error) throw error;
+
+            let ahmedCount = 0;
+            let lilyaCount = 0;
+
+            data.forEach(row => {
+                if (row.sender === 'Ahmed') ahmedCount++;
+                if (row.sender === 'Lilya') lilyaCount++;
+            });
+
+            // Update UI
+            const ahmedEl = document.getElementById('score-ahmed');
+            const lilyaEl = document.getElementById('score-lilya');
+
+            if (ahmedEl) ahmedEl.textContent = ahmedCount;
+            if (lilyaEl) lilyaEl.textContent = lilyaCount;
+
+            // Simple win logic
+            if (ahmedCount > lilyaCount) {
+                document.querySelector('.ahmed-score').style.border = '2px solid var(--dore)';
+            } else if (lilyaCount > ahmedCount) {
+                document.querySelector('.lilya-score').style.border = '2px solid var(--dore)';
+            }
+
+        } catch (err) {
+            console.error("Leaderboard error:", err);
         }
     }
 
-    // 7. Smart Weather (Day/Night Aware)
-    if (bostonWeather && fezWeather) {
-        function getIconForTime(timezone) {
-            const hour = parseInt(new Date().toLocaleString('en-US', { hour: 'numeric', hour12: false, timeZone: timezone }));
-            return (hour >= 6 && hour < 19) ? '☀️' : '🌙';
+    // Helper needed for timezone (mock function or import if needed, but for now we removed weather logic relying on it extensively)
+    // We already removed getIconForTime so we are good.
+
+    // Call updates
+    updateCountdown();
+    setInterval(updateCountdown, 60000);
+
+    // Initial fetches
+    fetchSignals();
+    fetchLeaderboard();
+
+    // Refresh leaderboard every minute
+    setInterval(fetchLeaderboard, 60000);
+
+    // 7. Interactive Particles (Heart Burst)
+    document.addEventListener('click', (e) => {
+        // Avoid bursting if clicking interactive elements (buttons, inputs)
+        if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+        createHeartBurst(e.clientX, e.clientY);
+    });
+
+    function createHeartBurst(x, y) {
+        for (let i = 0; i < 6; i++) {
+            const heart = document.createElement('div');
+            heart.classList.add('heart-particle');
+            heart.textContent = ['❤️', '✨', '💖', '✈️'][Math.floor(Math.random() * 4)];
+            // Random starting position offset
+            const offsetX = (Math.random() - 0.5) * 40;
+            const offsetY = (Math.random() - 0.5) * 40;
+
+            heart.style.left = `${x + offsetX}px`;
+            heart.style.top = `${y + offsetY}px`;
+
+            document.body.appendChild(heart);
+
+            // Cleanup
+            setTimeout(() => heart.remove(), 1500);
+        }
+    }
+
+    // 8. Mood Fusion Logic (Index Page)
+    const ahmedColorInput = document.getElementById('ahmed-color');
+    const lilyaColorInput = document.getElementById('lilya-color');
+    const fusionCircle = document.getElementById('fusion-circle');
+    const moodContainer = document.querySelector('.mood-container');
+
+    if (ahmedColorInput && lilyaColorInput && fusionCircle) {
+
+        // Initial Fetch
+        fetchMoods();
+
+        function updateFusion() {
+            const colorA = ahmedColorInput.value;
+            const colorL = lilyaColorInput.value;
+
+            // Update Circle
+            fusionCircle.style.background = `linear-gradient(135deg, ${colorA}, ${colorL})`;
+
+            // Update Container Glow
+            if (moodContainer) {
+                // Approximate blending for glow (simplified)
+                moodContainer.style.boxShadow = `0 0 40px ${colorA}40, 0 0 40px ${colorL}40`;
+            }
         }
 
-        function updateWeather() {
-            const bosTemp = Math.floor(Math.random() * (15 - 5 + 1) + 5);
-            const fezTemp = Math.floor(Math.random() * (30 - 15 + 1) + 15);
+        // Listeners with simple debounce
+        [ahmedColorInput, lilyaColorInput].forEach(input => {
+            input.addEventListener('change', async (e) => {
+                updateFusion();
 
-            const bosIcon = getIconForTime('America/New_York');
-            const fezIcon = getIconForTime('Africa/Casablanca');
+                // Save to DB
+                // Only save if identity matches (simple check, not secure auth)
+                const currentIdentity = localStorage.getItem('lilya_identity');
+                const targetUser = e.target.id.includes('ahmed') ? 'Ahmed' : 'Lilya';
 
-            const bosElem = document.querySelector('#weather-boston');
-            const fezElem = document.querySelector('#weather-fez');
-
-            if (bosElem) {
-                bosElem.querySelector('.weather-icon').textContent = bosIcon;
-                bosElem.querySelector('.temp').textContent = `${bosTemp}°C`;
-                bosElem.querySelector('.condition').textContent = bosIcon === '☀️' ? 'Ensoleillé' : 'Nuit Claire';
-            }
-
-            if (fezElem) {
-                fezElem.querySelector('.weather-icon').textContent = fezIcon;
-                fezElem.querySelector('.temp').textContent = `${fezTemp}°C`;
-                fezElem.querySelector('.condition').textContent = fezIcon === '☀️' ? 'Beau temps' : 'Étoilé';
-            }
-            // 6. Leaderboard Logic (Game)
-            async function fetchLeaderboard() {
-                try {
-                    // Get counts for everyone
-                    const { data, error } = await window.supabaseClient
-                        .from('signals')
-                        .select('sender');
-
-                    if (error) throw error;
-
-                    let ahmedCount = 0;
-                    let lilyaCount = 0;
-
-                    data.forEach(row => {
-                        if (row.sender === 'Ahmed') ahmedCount++;
-                        if (row.sender === 'Lilya') lilyaCount++;
-                    });
-
-                    // Update UI
-                    const ahmedEl = document.getElementById('score-ahmed');
-                    const lilyaEl = document.getElementById('score-lilya');
-
-                    if (ahmedEl) ahmedEl.textContent = ahmedCount;
-                    if (lilyaEl) lilyaEl.textContent = lilyaCount;
-
-                    // Simple win logic
-                    if (ahmedCount > lilyaCount) {
-                        document.querySelector('.ahmed-score').style.border = '2px solid var(--dore)';
-                    } else if (lilyaCount > ahmedCount) {
-                        document.querySelector('.lilya-score').style.border = '2px solid var(--dore)';
-                    }
-
-                } catch (err) {
-                    console.error("Leaderboard error:", err);
+                if (currentIdentity === targetUser) {
+                    await saveMood(targetUser, e.target.value);
+                } else {
+                    alert(`Vous ne pouvez modifier que l'humeur de ${currentIdentity} ! (Si c'est vous, vérifiez votre identité sur la page Distance)`);
+                    // Reset to DB value (re-fetch)
+                    fetchMoods();
                 }
-            }
-
-            // Call updates
-            updateCountdown();
-            setInterval(updateCountdown, 60000);
-
-            // Initial fetches
-            fetchSignals();
-            fetchLeaderboard();
-
-            // Refresh leaderboard every minute
-            setInterval(fetchLeaderboard, 60000);
-
-            // 7. Interactive Particles (Heart Burst)
-            document.addEventListener('click', (e) => {
-                // Avoid bursting if clicking interactive elements (buttons, inputs)
-                if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-
-                createHeartBurst(e.clientX, e.clientY);
             });
 
-            function createHeartBurst(x, y) {
-                for (let i = 0; i < 6; i++) {
-                    const heart = document.createElement('div');
-                    heart.classList.add('heart-particle');
-                    heart.textContent = ['❤️', '✨', '💖', '✈️'][Math.floor(Math.random() * 4)];
-                    // Random starting position offset
-                    const offsetX = (Math.random() - 0.5) * 40;
-                    const offsetY = (Math.random() - 0.5) * 40;
+            // Visual preview while dragging
+            input.addEventListener('input', updateFusion);
+        });
 
-                    heart.style.left = `${x + offsetX}px`;
-                    heart.style.top = `${y + offsetY}px`;
+        async function saveMood(user, color) {
+            const { error } = await window.supabaseClient
+                .from('moods')
+                .upsert({ user_name: user, mood_color: color }, { onConflict: 'user_name' });
 
-                    document.body.appendChild(heart);
+            if (error) console.error("Mood save error", error);
+        }
 
-                    // Cleanup
-                    setTimeout(() => heart.remove(), 1500);
-                }
+        async function fetchMoods() {
+            const { data, error } = await window.supabaseClient
+                .from('moods')
+                .select('*');
+
+            if (data) {
+                data.forEach(m => {
+                    if (m.user_name === 'Ahmed') ahmedColorInput.value = m.mood_color;
+                    if (m.user_name === 'Lilya') lilyaColorInput.value = m.mood_color;
+                });
+                updateFusion();
             }
         }
     }

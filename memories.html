@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Constellation des Souvenirs - Lilya & Ahmed</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            background-color: #050510;
+            /* Deeper black */
+            overflow: hidden;
+            /* No scroll, infinite space feeling */
+            cursor: crosshair;
+        }
+
+        #constellation-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        .memory-star {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #fff, 0 0 20px var(--dore);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            animation: twinkle 3s infinite;
+        }
+
+        .memory-star:hover {
+            transform: scale(3);
+            background: var(--dore);
+            z-index: 10;
+        }
+
+        .memory-tooltip {
+            position: absolute;
+            bottom: 15px;
+            /* Above star */
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(10, 22, 40, 0.9);
+            border: 1px solid var(--dore);
+            padding: 10px 15px;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            width: 200px;
+            text-align: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 100;
+        }
+
+        .memory-star:hover .memory-tooltip {
+            opacity: 1;
+        }
+
+        /* Modal for Adding */
+        .add-memory-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(16, 32, 56, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid var(--dore);
+            width: 90%;
+            max-width: 400px;
+            z-index: 1000;
+            text-align: center;
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 10px;
+            margin: 15px 0;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 8px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .instruction-overlay {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 14px;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">Lilya <span class="accent">&</span> Ahmed</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Accueil</a></li>
+                <li><a href="distance.html">Distance ✈️</a></li>
+                <li><a href="bucketlist.html">Projets 📝</a></li>
+                <li><a href="memories.html" class="active">Souvenirs ✨</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div id="constellation-container">
+        <!-- Stars will be injected here -->
+        <div class="instruction-overlay">Cliquez dans le ciel pour ajouter une étoile (un souvenir)</div>
+    </div>
+
+    <!-- Add Modal -->
+    <div id="add-modal" class="add-memory-modal hidden">
+        <h3 style="color: var(--dore); margin-bottom: 10px;">Ajouter une étoile ✨</h3>
+        <textarea id="memory-content" class="modal-input" placeholder="Quel souvenir brille ici ?" rows="3"></textarea>
+        <div style="display: flex; gap: 10px; justify-content: center;">
+            <button id="save-memory-btn" class="cta-button">Allumer</button>
+            <button id="cancel-memory-btn" class="cta-button"
+                style="background: transparent; border: 1px solid rgba(255,255,255,0.3);">Annuler</button>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script>
+        // --- Constellation Logic ---
+
+        const container = document.getElementById('constellation-container');
+        const modal = document.getElementById('add-modal');
+        const input = document.getElementById('memory-content');
+        const saveBtn = document.getElementById('save-memory-btn');
+        const cancelBtn = document.getElementById('cancel-memory-btn');
+
+        let clickPos = { x: 0, y: 0 };
+        const identity = localStorage.getItem('lilya_identity') || 'Anonyme';
+
+        // 1. Fetch & Render Memories
+        document.addEventListener('DOMContentLoaded', fetchMemories);
+
+        async function fetchMemories() {
+            const { data, error } = await window.supabaseClient
+                .from('memories')
+                .select('*');
+
+            if (error) console.error(error);
+            else {
+                // Clear existing stars (except overlay if any)
+                document.querySelectorAll('.memory-star').forEach(el => el.remove());
+
+                data.forEach(mem => createStarElement(mem));
+            }
+        }
+
+        function createStarElement(memory) {
+            const star = document.createElement('div');
+            star.className = 'memory-star';
+            star.style.left = memory.x_pos + '%';
+            star.style.top = memory.y_pos + '%';
+
+            // Random slight variations
+            star.style.animationDelay = Math.random() * 2 + 's';
+
+            star.innerHTML = `
+                <div class="memory-tooltip">
+                    ${memory.content}
+                    <div style="font-size: 10px; opacity: 0.5; margin-top:5px;">— ${memory.author}</div>
+                </div>
+            `;
+
+            container.appendChild(star);
+        }
+
+        // 2. Click to Add
+        container.addEventListener('click', (e) => {
+            if (e.target.closest('.memory-star') || e.target.closest('.navbar')) return;
+
+            clickPos.x = (e.clientX / window.innerWidth) * 100;
+            clickPos.y = (e.clientY / window.innerHeight) * 100;
+
+            modal.classList.remove('hidden');
+            input.focus();
+        });
+
+        // 3. Save Logic
+        saveBtn.addEventListener('click', async () => {
+            const content = input.value.trim();
+            if (!content) return;
+
+            saveBtn.textContent = "...";
+
+            const newMemory = {
+                author: identity,
+                content: content,
+                x_pos: clickPos.x,
+                y_pos: clickPos.y,
+                type: 'text'
+            };
+
+            const { data, error } = await window.supabaseClient
+                .from('memories')
+                .insert([newMemory])
+                .select(); // Return data to render immediately
+
+            if (error) {
+                alert("Erreur cosmique...");
+                console.error(error);
+            } else {
+                createStarElement(data[0]); // Render immediately
+                modal.classList.add('hidden');
+                input.value = "";
+            }
+            saveBtn.textContent = "Allumer";
+        });
+
+        cancelBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Avoid re-triggering container click
+            modal.classList.add('hidden');
+        });
+
+    </script>
+</body>
+
+</html>
