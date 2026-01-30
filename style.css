@@ -154,6 +154,8 @@ body {
     font-family: var(--font-display);
     font-size: 28px;
     font-weight: 700;
+    color: var(--dore);
+    /* Fallback for black text issue */
     background: var(--gradient-gold);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -208,12 +210,26 @@ body {
     transition: width 0.3s ease;
 }
 
-.nav-links a:hover {
+
+.nav-links a:hover,
+.nav-links a.active {
     color: var(--dore);
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
 }
 
-.nav-links a:hover::after {
+.nav-links a:hover::after,
+.nav-links a.active::after {
     width: 100%;
+}
+
+.nav-special {
+    font-weight: 700 !important;
+}
+
+/* Ensure Logo is visible */
+.logo-text {
+    color: var(--dore);
+    /* Fallback */
 }
 
 
